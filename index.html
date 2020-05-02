@@ -1,0 +1,268 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ncfacbot &#8212; ncfacbot  documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">ncfacbot  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ncfacbot">
+<h1>ncfacbot<a class="headerlink" href="#ncfacbot" title="Permalink to this headline">¶</a></h1>
+<p>A work in progress.</p>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-ncfacbot">
+<span id="main"></span><h2>Main<a class="headerlink" href="#module-ncfacbot" title="Permalink to this headline">¶</a></h2>
+<p>Nexus Clash Faction Discord bot</p>
+</div>
+<div class="section" id="module-ncfacbot.common">
+<span id="common"></span><h2>Common<a class="headerlink" href="#module-ncfacbot.common" title="Permalink to this headline">¶</a></h2>
+<p>Common functions module</p>
+<dl class="py data">
+<dt id="ncfacbot.common.DATETIME_FORMAT">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">DATETIME_FORMAT</code><em class="property"> = '%a %Y-%m-%d %H:%M:%S %Z'</em><a class="headerlink" href="#ncfacbot.common.DATETIME_FORMAT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formatting string for datetime objects</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="ncfacbot.common.FIFTEEN_MINS">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">FIFTEEN_MINS</code><em class="property"> = 900</em><a class="headerlink" href="#ncfacbot.common.FIFTEEN_MINS" title="Permalink to this definition">¶</a></dt>
+<dd><p>15 minutes in seconds</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="ncfacbot.common.THUMBS_DOWN">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">THUMBS_DOWN</code><em class="property"> = '👎'</em><a class="headerlink" href="#ncfacbot.common.THUMBS_DOWN" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Thumbsdown</dt>
+<dd class="field-odd"><p>emoji</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.common.channel_only">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">channel_only</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#channel_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.channel_only" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for bot commands that should only operate in a channel</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.common.get_datetime_chunks">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">get_datetime_chunks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#get_datetime_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.get_datetime_chunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search string for chunks of datetime parameters, like 5d 10h 15m, etc.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.common.get_next_tick">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">get_next_tick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#get_next_tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.get_next_tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate future tick as datetime in GMT</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.common.normalize_username">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">normalize_username</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">author</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#normalize_username"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.normalize_username" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize username for use in messages</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ncfacbot.settings">
+<span id="settings"></span><h2>Settings<a class="headerlink" href="#module-ncfacbot.settings" title="Permalink to this headline">¶</a></h2>
+<p>Setting module</p>
+<dl class="py class">
+<dt id="ncfacbot.settings.Setting">
+<em class="property">class </em><code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">Setting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">validate</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#Setting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.Setting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setting class; represents an individual setting definition</p>
+<dl class="py attribute">
+<dt id="ncfacbot.settings.Setting.channel">
+<code class="sig-name descname">channel</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.settings.Setting.channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>If this is a channel (and not a guild) setting</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ncfacbot.settings.Setting.default">
+<code class="sig-name descname">default</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.settings.Setting.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ncfacbot.settings.Setting.description">
+<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.settings.Setting.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>This setting’s description</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ncfacbot.settings.Setting.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#Setting.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.Setting.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the setting’s value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ctx</strong> – The Discord connection context</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The setting’s value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ncfacbot.settings.Setting.name">
+<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.settings.Setting.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The setting’s name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ncfacbot.settings.Setting.set">
+<code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#Setting.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.Setting.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the setting’s value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – The Discord connection context</p></li>
+<li><p><strong>value</strong> – The value to assign (or <code class="docutils literal notranslate"><span class="pre">None</span></code> for the default)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Success</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ncfacbot.settings.Setting.validate">
+<code class="sig-name descname">validate</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.settings.Setting.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validator function</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.settings.register">
+<code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">validator</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a setting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of the setting</p></li>
+<li><p><strong>default</strong> – The default value if none is provided</p></li>
+<li><p><strong>validator</strong> – The validation function for the setting’s value</p></li>
+<li><p><strong>channel</strong> – If this is a channel (and not a guild) setting</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.settings.require_roles">
+<code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">setting</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.require_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for requiring particular roles (loaded from the given setting) to
+execute a command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>setting</strong> – The name of the setting to pull the roles from, or <code class="docutils literal notranslate"><span class="pre">None</span></code>
+if the command should only be used by administrators/moderators</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt id="ncfacbot.settings.settings">
+<code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">settings</code><em class="property"> = {}</em><a class="headerlink" href="#ncfacbot.settings.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setting definitions</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ncfacbot.commands">
+<span id="commands"></span><h2>Commands<a class="headerlink" href="#module-ncfacbot.commands" title="Permalink to this headline">¶</a></h2>
+<p>Commands module</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ncfacbot</a><ul>
+<li><a class="reference internal" href="#module-ncfacbot">Main</a></li>
+<li><a class="reference internal" href="#module-ncfacbot.common">Common</a></li>
+<li><a class="reference internal" href="#module-ncfacbot.settings">Settings</a></li>
+<li><a class="reference internal" href="#module-ncfacbot.commands">Commands</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">ncfacbot  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, haliphax.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.
+    </div>
+  </body>
+</html>
