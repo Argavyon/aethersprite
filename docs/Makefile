@@ -16,3 +16,5 @@ github:
 	@make html
 	@rm *.sqlite3
 	@cp -a _build/html/. ../
+	@rm ../objects.inv
+	@rm ../.buildinfo
