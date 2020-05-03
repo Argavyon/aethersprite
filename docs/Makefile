@@ -10,8 +10,9 @@ help:
 
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	@rm *.sqlite3
 
 github:
+	@make clean
 	@make html
+	@rm *.sqlite3
 	@cp -a _build/html/. ../
