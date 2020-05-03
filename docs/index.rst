@@ -31,6 +31,26 @@ Settings
 Commands
 --------
 
-.. automodule:: ncfacbot.commands
+.. automodule:: ncfacbot.commands.closest
     :members:
-    :show-inheritance:
+
+.. automodule:: ncfacbot.commands.github
+    :members:
+
+.. automodule:: ncfacbot.commands.gmt
+    :members:
+
+.. automodule:: ncfacbot.commands.raid
+    :members:
+
+.. automodule:: ncfacbot.commands.settings
+    :members:
+
+.. automodule:: ncfacbot.commands.shop
+    :members:
+
+.. automodule:: ncfacbot.commands.sm
+    :members:
+
+.. automodule:: ncfacbot.commands.tick
+    :members:

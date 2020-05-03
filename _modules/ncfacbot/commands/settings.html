@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ncfacbot.commands.settings &#8212; ncfacbot  documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">ncfacbot  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ncfacbot.commands.settings</h1><div class="highlight"><pre>
+<span></span><span class="s2">&quot;Settings commands; store, view, and manipulate settings&quot;</span>
+
+<span class="c1"># stdlib</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="c1"># 3rd party</span>
+<span class="kn">from</span> <span class="nn">discord.ext</span> <span class="kn">import</span> <span class="n">commands</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="c1"># local</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">bot</span><span class="p">,</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">channel_only</span><span class="p">,</span> <span class="n">THUMBS_DOWN</span>
+<span class="kn">from</span> <span class="nn">..settings</span> <span class="kn">import</span> <span class="n">settings</span><span class="p">,</span> <span class="n">register</span><span class="p">,</span> <span class="n">require_roles</span>
+
+<span class="c1"># messages</span>
+<span class="n">MSG_NO_SETTING</span> <span class="o">=</span> <span class="s1">&#39;:person_shrugging: No such setting exists.&#39;</span>
+
+<span class="c1"># settings</span>
+<span class="n">register</span><span class="p">(</span><span class="s1">&#39;settings.adminroles&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+         <span class="s1">&#39;The server roles that are allowed to administer settings. Separate &#39;</span>
+         <span class="s1">&#39;multiple values with commas. Administrators and moderators have de &#39;</span>
+         <span class="s1">&#39;facto access to all commands.&#39;</span><span class="p">)</span>
+
+<span class="c1"># authorization decorator</span>
+<span class="n">authz</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">require_roles</span><span class="p">,</span> <span class="n">setting</span><span class="o">=</span><span class="s1">&#39;settings.adminroles&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Settings"><a class="viewcode-back" href="../../../index.html#ncfacbot.commands.settings.Settings">[docs]</a><span class="k">class</span> <span class="nc">Settings</span><span class="p">(</span><span class="n">commands</span><span class="o">.</span><span class="n">Cog</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;settings&#39;</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Settings commands</span>
+
+<span class="sd">    View settings, change settings, reset settings, and view settings descriptions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bot</span> <span class="o">=</span> <span class="n">bot</span>
+
+    <span class="nd">@commands</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;set&#39;</span><span class="p">)</span>
+    <span class="nd">@authz</span>
+    <span class="nd">@channel_only</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">value</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change/view a setting&#39;s value</span>
+
+<span class="sd">        If [name] is not provided, a list of all settings (but not their values) will be shown. If [value] is not provided, the setting&#39;s current value (and its default) will be shown, instead. Note that channel-dependent settings must be set and viewed in relevant channels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">settings_str</span> <span class="o">=</span> <span class="s1">&#39;**, **&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+            <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;:gear: All settings: **</span><span class="si">{</span><span class="n">settings_str</span><span class="si">}</span><span class="s1">**&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> viewed all settings&#39;</span><span class="p">)</span>
+
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">MSG_NO_SETTING</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> attempted to set nonexistent setting: &#39;</span>
+                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">return</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">default</span>
+            <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;:gear: `</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> =&gt; </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1">` &#39;</span>
+                           <span class="sa">f</span><span class="s1">&#39;_(Default: </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">default</span><span class="p">)</span><span class="si">}</span><span class="s1">)_&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> viewed setting </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;:thumbsup: Value updated.&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> updated setting </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;:thumbsdown: Error updating value.&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> failed to update setting </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@commands</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;clear&#39;</span><span class="p">)</span>
+    <span class="nd">@authz</span>
+    <span class="nd">@channel_only</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="s2">&quot;Reset setting &lt;name&gt; to its default value&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> attempted to clear nonexistent setting: &#39;</span>
+                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">MSG_NO_SETTING</span><span class="p">)</span>
+
+            <span class="k">return</span>
+
+        <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;:negative_squared_cross_mark: Setting cleared.&#39;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> cleared setting </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@commands</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;desc&#39;</span><span class="p">)</span>
+    <span class="nd">@authz</span>
+    <span class="nd">@channel_only</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">desc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="s2">&quot;View description of setting [name]&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">MSG_NO_SETTING</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> attempted to view description of &#39;</span>
+                     <span class="sa">f</span><span class="s1">&#39;nonexistent setting </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">return</span>
+
+        <span class="n">setting</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">setting</span><span class="o">.</span><span class="n">description</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;:person_shrugging: No description set.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;:question: `</span><span class="si">{</span><span class="n">setting</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">` &#39;</span>
+                           <span class="sa">f</span><span class="s1">&#39;_(Channel: **</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span><span class="si">}</span><span class="s1">**)_</span><span class="se">\n</span><span class="s1">&#39;</span>
+                           <span class="sa">f</span><span class="s1">&#39;&gt; </span><span class="si">{</span><span class="n">setting</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> viewed description of setting </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<span class="n">bot</span><span class="o">.</span><span class="n">add_cog</span><span class="p">(</span><span class="n">Settings</span><span class="p">(</span><span class="n">bot</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">ncfacbot  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, haliphax.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.
+    </div>
+  </body>
+</html>
