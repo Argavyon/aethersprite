@@ -1,0 +1,1083 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>discord.ext.commands.bot &#8212; ncfacbot  documentation</title>
+    <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">ncfacbot  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for discord.ext.commands.bot</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The MIT License (MIT)</span>
+
+<span class="sd">Copyright (c) 2015-2020 Rapptz</span>
+
+<span class="sd">Permission is hereby granted, free of charge, to any person obtaining a</span>
+<span class="sd">copy of this software and associated documentation files (the &quot;Software&quot;),</span>
+<span class="sd">to deal in the Software without restriction, including without limitation</span>
+<span class="sd">the rights to use, copy, modify, merge, publish, distribute, sublicense,</span>
+<span class="sd">and/or sell copies of the Software, and to permit persons to whom the</span>
+<span class="sd">Software is furnished to do so, subject to the following conditions:</span>
+
+<span class="sd">The above copyright notice and this permission notice shall be included in</span>
+<span class="sd">all copies or substantial portions of the Software.</span>
+
+<span class="sd">THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS</span>
+<span class="sd">OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="sd">FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="sd">AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="sd">LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING</span>
+<span class="sd">FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER</span>
+<span class="sd">DEALINGS IN THE SOFTWARE.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">importlib.util</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">types</span>
+
+<span class="kn">import</span> <span class="nn">discord</span>
+
+<span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">GroupMixin</span><span class="p">,</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">.view</span> <span class="kn">import</span> <span class="n">StringView</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">errors</span>
+<span class="kn">from</span> <span class="nn">.help</span> <span class="kn">import</span> <span class="n">HelpCommand</span><span class="p">,</span> <span class="n">DefaultHelpCommand</span>
+<span class="kn">from</span> <span class="nn">.cog</span> <span class="kn">import</span> <span class="n">Cog</span>
+
+<span class="k">def</span> <span class="nf">when_mentioned</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A callable that implements a command prefix equivalent to being mentioned.</span>
+
+<span class="sd">    These are meant to be passed into the :attr:`.Bot.command_prefix` attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">bot</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">mention</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;@!</span><span class="si">%s</span><span class="s1">&gt; &#39;</span> <span class="o">%</span> <span class="n">bot</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">when_mentioned_or</span><span class="p">(</span><span class="o">*</span><span class="n">prefixes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A callable that implements when mentioned or other prefixes provided.</span>
+
+<span class="sd">    These are meant to be passed into the :attr:`.Bot.command_prefix` attribute.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. code-block:: python3</span>
+
+<span class="sd">        bot = commands.Bot(command_prefix=commands.when_mentioned_or(&#39;!&#39;))</span>
+
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        This callable returns another callable, so if this is done inside a custom</span>
+<span class="sd">        callable, you must call the returned callable, for example:</span>
+
+<span class="sd">        .. code-block:: python3</span>
+
+<span class="sd">            async def get_prefix(bot, message):</span>
+<span class="sd">                extras = await prefixes_for(message.guild) # returns a list</span>
+<span class="sd">                return commands.when_mentioned_or(*extras)(bot, message)</span>
+
+
+<span class="sd">    See Also</span>
+<span class="sd">    ----------</span>
+<span class="sd">    :func:`.when_mentioned`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prefixes</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">when_mentioned</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span> <span class="o">+</span> <span class="n">r</span>
+        <span class="k">return</span> <span class="n">r</span>
+
+    <span class="k">return</span> <span class="n">inner</span>
+
+<span class="k">def</span> <span class="nf">_is_submodule</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">parent</span> <span class="o">==</span> <span class="n">child</span> <span class="ow">or</span> <span class="n">child</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">parent</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">_DefaultRepr</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;default-help-command&gt;&#39;</span>
+
+<span class="n">_default</span> <span class="o">=</span> <span class="n">_DefaultRepr</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">BotBase</span><span class="p">(</span><span class="n">GroupMixin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_prefix</span><span class="p">,</span> <span class="n">help_command</span><span class="o">=</span><span class="n">_default</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_prefix</span> <span class="o">=</span> <span class="n">command_prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_events</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cogs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__extensions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_once</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_before_invoke</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_after_invoke</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_help_command</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">description</span><span class="p">)</span> <span class="k">if</span> <span class="n">description</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">owner_id</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;owner_id&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">owner_ids</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;owner_ids&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner_id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner_ids</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Both owner_id and owner_ids are set.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner_ids</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">owner_ids</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;owner_ids must be a collection not </span><span class="si">{0.__class__!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">owner_ids</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;self_bot&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_skip_check</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">y</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_skip_check</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span>
+
+        <span class="k">if</span> <span class="n">help_command</span> <span class="ow">is</span> <span class="n">_default</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">help_command</span> <span class="o">=</span> <span class="n">DefaultHelpCommand</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">help_command</span> <span class="o">=</span> <span class="n">help_command</span>
+
+    <span class="c1"># internal helpers</span>
+
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ev</span> <span class="o">=</span> <span class="s1">&#39;on_&#39;</span> <span class="o">+</span> <span class="n">event_name</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_events</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ev</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_schedule_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">ev</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">extension</span> <span class="ow">in</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__extensions</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unload_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">for</span> <span class="n">cog</span> <span class="ow">in</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__cogs</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_cog</span><span class="p">(</span><span class="n">cog</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">on_command_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;|coro|</span>
+
+<span class="sd">        The default command error handler provided by the bot.</span>
+
+<span class="sd">        By default this prints to :data:`sys.stderr` however it could be</span>
+<span class="sd">        overridden to have a different implementation.</span>
+
+<span class="sd">        This only fires if you do not specify any listeners for command error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_events</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;on_command_error&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">command</span><span class="p">,</span> <span class="s1">&#39;on_error&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">cog</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">cog</span>
+        <span class="k">if</span> <span class="n">cog</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Cog</span><span class="o">.</span><span class="n">_get_overridden_method</span><span class="p">(</span><span class="n">cog</span><span class="o">.</span><span class="n">cog_command_error</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ignoring exception in command </span><span class="si">{}</span><span class="s1">:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">command</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">),</span> <span class="n">exception</span><span class="p">,</span> <span class="n">exception</span><span class="o">.</span><span class="n">__traceback__</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+
+    <span class="c1"># global check registration</span>
+
+    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;A decorator that adds a global check to the bot.</span>
+
+<span class="sd">        A global check is similar to a :func:`.check` that is applied</span>
+<span class="sd">        on a per command basis except it is run before any command checks</span>
+<span class="sd">        have been verified and applies to every command the bot has.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            This function can either be a regular function or a coroutine.</span>
+
+<span class="sd">        Similar to a command :func:`.check`\, this takes a single parameter</span>
+<span class="sd">        of type :class:`.Context` and can only raise exceptions inherited from</span>
+<span class="sd">        :exc:`.CommandError`.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        .. code-block:: python3</span>
+
+<span class="sd">            @bot.check</span>
+<span class="sd">            def check_commands(ctx):</span>
+<span class="sd">                return ctx.command.qualified_name in allowed_commands</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_check</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span>
+
+    <span class="k">def</span> <span class="nf">add_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">call_once</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds a global check to the bot.</span>
+
+<span class="sd">        This is the non-decorator interface to :meth:`.check`</span>
+<span class="sd">        and :meth:`.check_once`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        func</span>
+<span class="sd">            The function that was used as a global check.</span>
+<span class="sd">        call_once: :class:`bool`</span>
+<span class="sd">            If the function should only be called once per</span>
+<span class="sd">            :meth:`Command.invoke` call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">call_once</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_once</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">remove_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">call_once</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Removes a global check from the bot.</span>
+
+<span class="sd">        This function is idempotent and will not raise an exception</span>
+<span class="sd">        if the function is not in the global checks.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        func</span>
+<span class="sd">            The function to remove from the global checks.</span>
+<span class="sd">        call_once: :class:`bool`</span>
+<span class="sd">            If the function was added with ``call_once=True`` in</span>
+<span class="sd">            the :meth:`.Bot.add_check` call or using :meth:`.check_once`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_once</span> <span class="k">if</span> <span class="n">call_once</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">l</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">check_once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;A decorator that adds a &quot;call once&quot; global check to the bot.</span>
+
+<span class="sd">        Unlike regular global checks, this one is called only once</span>
+<span class="sd">        per :meth:`Command.invoke` call.</span>
+
+<span class="sd">        Regular global checks are called whenever a command is called</span>
+<span class="sd">        or :meth:`.Command.can_run` is called. This type of check</span>
+<span class="sd">        bypasses that and ensures that it&#39;s called only once, even inside</span>
+<span class="sd">        the default help command.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            This function can either be a regular function or a coroutine.</span>
+
+<span class="sd">        Similar to a command :func:`.check`\, this takes a single parameter</span>
+<span class="sd">        of type :class:`.Context` and can only raise exceptions inherited from</span>
+<span class="sd">        :exc:`.CommandError`.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        .. code-block:: python3</span>
+
+<span class="sd">            @bot.check_once</span>
+<span class="sd">            def whitelist(ctx):</span>
+<span class="sd">                return ctx.message.author.id in my_whitelist</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_check</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">call_once</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">can_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">call_once</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_once</span> <span class="k">if</span> <span class="n">call_once</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="k">await</span> <span class="n">discord</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">async_all</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">is_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;|coro|</span>
+
+<span class="sd">        Checks if a :class:`~discord.User` or :class:`~discord.Member` is the owner of</span>
+<span class="sd">        this bot.</span>
+
+<span class="sd">        If an :attr:`owner_id` is not set, it is fetched automatically</span>
+<span class="sd">        through the use of :meth:`~.Bot.application_info`.</span>
+
+<span class="sd">        .. versionchanged:: 1.3</span>
+<span class="sd">            The function also checks if the application is team-owned if</span>
+<span class="sd">            :attr:`owner_ids` is not set.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        user: :class:`.abc.User`</span>
+<span class="sd">            The user to check for.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`bool`</span>
+<span class="sd">            Whether the user is the owner.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner_id</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner_ids</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner_ids</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">app</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">application_info</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">app</span><span class="o">.</span><span class="n">team</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">owner_ids</span> <span class="o">=</span> <span class="n">ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">team</span><span class="o">.</span><span class="n">members</span><span class="p">}</span>
+                <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">ids</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">owner_id</span> <span class="o">=</span> <span class="n">owner_id</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">owner_id</span>
+
+    <span class="k">def</span> <span class="nf">before_invoke</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coro</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A decorator that registers a coroutine as a pre-invoke hook.</span>
+
+<span class="sd">        A pre-invoke hook is called directly before the command is</span>
+<span class="sd">        called. This makes it a useful function to set up database</span>
+<span class="sd">        connections or any type of set up required.</span>
+
+<span class="sd">        This pre-invoke hook takes a sole parameter, a :class:`.Context`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            The :meth:`~.Bot.before_invoke` and :meth:`~.Bot.after_invoke` hooks are</span>
+<span class="sd">            only called if all checks and argument parsing procedures pass</span>
+<span class="sd">            without error. If any check or argument parsing procedures fail</span>
+<span class="sd">            then the hooks are not called.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        coro: :ref:`coroutine &lt;coroutine&gt;`</span>
+<span class="sd">            The coroutine to register as the pre-invoke hook.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            The coroutine passed is not actually a coroutine.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">coro</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The pre-invoke hook must be a coroutine.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_before_invoke</span> <span class="o">=</span> <span class="n">coro</span>
+        <span class="k">return</span> <span class="n">coro</span>
+
+    <span class="k">def</span> <span class="nf">after_invoke</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coro</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;A decorator that registers a coroutine as a post-invoke hook.</span>
+
+<span class="sd">        A post-invoke hook is called directly after the command is</span>
+<span class="sd">        called. This makes it a useful function to clean-up database</span>
+<span class="sd">        connections or any type of clean up required.</span>
+
+<span class="sd">        This post-invoke hook takes a sole parameter, a :class:`.Context`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            Similar to :meth:`~.Bot.before_invoke`\, this is not called unless</span>
+<span class="sd">            checks and argument parsing procedures succeed. This hook is,</span>
+<span class="sd">            however, **always** called regardless of the internal command</span>
+<span class="sd">            callback raising an error (i.e. :exc:`.CommandInvokeError`\).</span>
+<span class="sd">            This makes it ideal for clean-up scenarios.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        coro: :ref:`coroutine &lt;coroutine&gt;`</span>
+<span class="sd">            The coroutine to register as the post-invoke hook.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            The coroutine passed is not actually a coroutine.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">coro</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The post-invoke hook must be a coroutine.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_after_invoke</span> <span class="o">=</span> <span class="n">coro</span>
+        <span class="k">return</span> <span class="n">coro</span>
+
+    <span class="c1"># listener registration</span>
+
+    <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The non decorator alternative to :meth:`.listen`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        func: :ref:`coroutine &lt;coroutine&gt;`</span>
+<span class="sd">            The function to call.</span>
+<span class="sd">        name: Optional[:class:`str`]</span>
+<span class="sd">            The name of the event to listen for. Defaults to ``func.__name__``.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        .. code-block:: python3</span>
+
+<span class="sd">            async def on_ready(): pass</span>
+<span class="sd">            async def my_message(message): pass</span>
+
+<span class="sd">            bot.add_listener(on_ready)</span>
+<span class="sd">            bot.add_listener(my_message, &#39;on_message&#39;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Listeners must be coroutines&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_events</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extra_events</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extra_events</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">remove_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Removes a listener from the pool of listeners.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        func</span>
+<span class="sd">            The function that was used as a listener to remove.</span>
+<span class="sd">        name: :class:`str`</span>
+<span class="sd">            The name of the event we want to remove. Defaults to</span>
+<span class="sd">            ``func.__name__``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_events</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">extra_events</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">listen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A decorator that registers another function as an external</span>
+<span class="sd">        event listener. Basically this allows you to listen to multiple</span>
+<span class="sd">        events from different places e.g. such as :func:`.on_ready`</span>
+
+<span class="sd">        The functions being listened to must be a :ref:`coroutine &lt;coroutine&gt;`.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        .. code-block:: python3</span>
+
+<span class="sd">            @bot.listen()</span>
+<span class="sd">            async def on_message(message):</span>
+<span class="sd">                print(&#39;one&#39;)</span>
+
+<span class="sd">            # in some other file...</span>
+
+<span class="sd">            @bot.listen(&#39;on_message&#39;)</span>
+<span class="sd">            async def my_message(message):</span>
+<span class="sd">                print(&#39;two&#39;)</span>
+
+<span class="sd">        Would print one and two in an unspecified order.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            The function being listened to is not a coroutine.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_listener</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">func</span>
+
+        <span class="k">return</span> <span class="n">decorator</span>
+
+    <span class="c1"># cogs</span>
+
+    <span class="k">def</span> <span class="nf">add_cog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cog</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds a &quot;cog&quot; to the bot.</span>
+
+<span class="sd">        A cog is a class that has its own event listeners and commands.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        cog: :class:`.Cog`</span>
+<span class="sd">            The cog to register to the bot.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            The cog does not inherit from :class:`.Cog`.</span>
+<span class="sd">        CommandError</span>
+<span class="sd">            An error happened during loading.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cog</span><span class="p">,</span> <span class="n">Cog</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;cogs must derive from Cog&#39;</span><span class="p">)</span>
+
+        <span class="n">cog</span> <span class="o">=</span> <span class="n">cog</span><span class="o">.</span><span class="n">_inject</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cogs</span><span class="p">[</span><span class="n">cog</span><span class="o">.</span><span class="n">__cog_name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">cog</span>
+
+    <span class="k">def</span> <span class="nf">get_cog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the cog instance requested.</span>
+
+<span class="sd">        If the cog is not found, ``None`` is returned instead.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        name: :class:`str`</span>
+<span class="sd">            The name of the cog you are requesting.</span>
+<span class="sd">            This is equivalent to the name passed via keyword</span>
+<span class="sd">            argument in class creation or the class name if unspecified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cogs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">remove_cog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Removes a cog from the bot.</span>
+
+<span class="sd">        All registered commands and event listeners that the</span>
+<span class="sd">        cog has registered will be removed as well.</span>
+
+<span class="sd">        If no cog is found then this method has no effect.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        name: :class:`str`</span>
+<span class="sd">            The name of the cog to remove.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">cog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cogs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cog</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">help_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_help_command</span>
+        <span class="k">if</span> <span class="n">help_command</span> <span class="ow">and</span> <span class="n">help_command</span><span class="o">.</span><span class="n">cog</span> <span class="ow">is</span> <span class="n">cog</span><span class="p">:</span>
+            <span class="n">help_command</span><span class="o">.</span><span class="n">cog</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">cog</span><span class="o">.</span><span class="n">_eject</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cogs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Mapping[:class:`str`, :class:`Cog`]: A read-only mapping of cog name to cog.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">types</span><span class="o">.</span><span class="n">MappingProxyType</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__cogs</span><span class="p">)</span>
+
+    <span class="c1"># extensions</span>
+
+    <span class="k">def</span> <span class="nf">_remove_module_references</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># find all references to the module</span>
+        <span class="c1"># remove the cogs registered from the module</span>
+        <span class="k">for</span> <span class="n">cogname</span><span class="p">,</span> <span class="n">cog</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cogs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">_is_submodule</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">cog</span><span class="o">.</span><span class="vm">__module__</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_cog</span><span class="p">(</span><span class="n">cogname</span><span class="p">)</span>
+
+        <span class="c1"># remove all the commands from the module</span>
+        <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_commands</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">cmd</span><span class="o">.</span><span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_is_submodule</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">cmd</span><span class="o">.</span><span class="n">module</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">GroupMixin</span><span class="p">):</span>
+                    <span class="n">cmd</span><span class="o">.</span><span class="n">recursively_remove_all_commands</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_command</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># remove all the listeners from the module</span>
+        <span class="k">for</span> <span class="n">event_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_events</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">remove</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">event</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">event_list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_is_submodule</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="vm">__module__</span><span class="p">):</span>
+                    <span class="n">remove</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">remove</span><span class="p">):</span>
+                <span class="k">del</span> <span class="n">event_list</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_call_module_finalizers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lib</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">lib</span><span class="p">,</span> <span class="s1">&#39;teardown&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__extensions</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="n">_is_submodule</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+                    <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_load_from_module_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="c1"># precondition: key not in self.__extensions</span>
+        <span class="n">lib</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">lib</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">spec</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">exec_module</span><span class="p">(</span><span class="n">lib</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ExtensionFailed</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">setup</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">lib</span><span class="p">,</span> <span class="s1">&#39;setup&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">NoEntryPointError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remove_module_references</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_call_module_finalizers</span><span class="p">(</span><span class="n">lib</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ExtensionFailed</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__extensions</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">lib</span>
+
+    <span class="k">def</span> <span class="nf">load_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Loads an extension.</span>
+
+<span class="sd">        An extension is a python module that contains commands, cogs, or</span>
+<span class="sd">        listeners.</span>
+
+<span class="sd">        An extension must have a global function, ``setup`` defined as</span>
+<span class="sd">        the entry point on what to do when the extension is loaded. This entry</span>
+<span class="sd">        point must have a single argument, the ``bot``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        name: :class:`str`</span>
+<span class="sd">            The extension name to load. It must be dot separated like</span>
+<span class="sd">            regular Python imports if accessing a sub-module. e.g.</span>
+<span class="sd">            ``foo.test`` if you want to import ``foo/test.py``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        --------</span>
+<span class="sd">        ExtensionNotFound</span>
+<span class="sd">            The extension could not be imported.</span>
+<span class="sd">        ExtensionAlreadyLoaded</span>
+<span class="sd">            The extension is already loaded.</span>
+<span class="sd">        NoEntryPointError</span>
+<span class="sd">            The extension does not have a setup function.</span>
+<span class="sd">        ExtensionFailed</span>
+<span class="sd">            The extension or its setup function had an execution error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__extensions</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ExtensionAlreadyLoaded</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ExtensionNotFound</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_from_module_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">unload_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Unloads an extension.</span>
+
+<span class="sd">        When the extension is unloaded, all commands, listeners, and cogs are</span>
+<span class="sd">        removed from the bot and the module is un-imported.</span>
+
+<span class="sd">        The extension can provide an optional global function, ``teardown``,</span>
+<span class="sd">        to do miscellaneous clean-up if necessary. This function takes a single</span>
+<span class="sd">        parameter, the ``bot``, similar to ``setup`` from</span>
+<span class="sd">        :meth:`~.Bot.load_extension`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        name: :class:`str`</span>
+<span class="sd">            The extension name to unload. It must be dot separated like</span>
+<span class="sd">            regular Python imports if accessing a sub-module. e.g.</span>
+<span class="sd">            ``foo.test`` if you want to import ``foo/test.py``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        ExtensionNotLoaded</span>
+<span class="sd">            The extension was not loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">lib</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__extensions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lib</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ExtensionNotLoaded</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_module_references</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_call_module_finalizers</span><span class="p">(</span><span class="n">lib</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">reload_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Atomically reloads an extension.</span>
+
+<span class="sd">        This replaces the extension with the same extension, only refreshed. This is</span>
+<span class="sd">        equivalent to a :meth:`unload_extension` followed by a :meth:`load_extension`</span>
+<span class="sd">        except done in an atomic way. That is, if an operation fails mid-reload then</span>
+<span class="sd">        the bot will roll-back to the prior working state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        name: :class:`str`</span>
+<span class="sd">            The extension name to reload. It must be dot separated like</span>
+<span class="sd">            regular Python imports if accessing a sub-module. e.g.</span>
+<span class="sd">            ``foo.test`` if you want to import ``foo/test.py``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        ExtensionNotLoaded</span>
+<span class="sd">            The extension was not loaded.</span>
+<span class="sd">        ExtensionNotFound</span>
+<span class="sd">            The extension could not be imported.</span>
+<span class="sd">        NoEntryPointError</span>
+<span class="sd">            The extension does not have a setup function.</span>
+<span class="sd">        ExtensionFailed</span>
+<span class="sd">            The extension setup function had an execution error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">lib</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__extensions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lib</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ExtensionNotLoaded</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># get the previous module states from sys modules</span>
+        <span class="n">modules</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">module</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">_is_submodule</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Unload and then load the module...</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remove_module_references</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_call_module_finalizers</span><span class="p">(</span><span class="n">lib</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_extension</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># if the load failed, the remnants should have been</span>
+            <span class="c1"># cleaned from the load_extension function call</span>
+            <span class="c1"># so let&#39;s load it from our old compiled library.</span>
+            <span class="n">lib</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__extensions</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">lib</span>
+
+            <span class="c1"># revert sys.modules back to normal and raise back to caller</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">modules</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Mapping[:class:`str`, :class:`py:types.ModuleType`]: A read-only mapping of extension name to extension.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">types</span><span class="o">.</span><span class="n">MappingProxyType</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__extensions</span><span class="p">)</span>
+
+    <span class="c1"># help command stuff</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">help_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_help_command</span>
+
+    <span class="nd">@help_command</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">help_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">HelpCommand</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;help_command must be a subclass of HelpCommand&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_help_command</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_help_command</span><span class="o">.</span><span class="n">_remove_from_bot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_help_command</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">_add_to_bot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_help_command</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_help_command</span><span class="o">.</span><span class="n">_remove_from_bot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_help_command</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_help_command</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># command processing</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;|coro|</span>
+
+<span class="sd">        Retrieves the prefix the bot is listening to</span>
+<span class="sd">        with the message as a context.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        message: :class:`discord.Message`</span>
+<span class="sd">            The message context to get the prefix of.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        Union[List[:class:`str`], :class:`str`]</span>
+<span class="sd">            A list of prefixes or a single prefix that the bot is</span>
+<span class="sd">            listening for.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_prefix</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="k">await</span> <span class="n">discord</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">maybe_coroutine</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="c1"># It&#39;s possible that a generator raised this exception.  Don&#39;t</span>
+                <span class="c1"># replace it with our own error if that&#39;s the case.</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+                    <span class="k">raise</span>
+
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;command_prefix must be plain string, iterable of strings, or callable &quot;</span>
+                                <span class="s2">&quot;returning either of these, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Iterable command_prefix must contain at least one prefix&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">Context</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;|coro|</span>
+
+<span class="sd">        Returns the invocation context from the message.</span>
+
+<span class="sd">        This is a more low-level counter-part for :meth:`.process_commands`</span>
+<span class="sd">        to allow users more fine grained control over the processing.</span>
+
+<span class="sd">        The returned context is not guaranteed to be a valid invocation</span>
+<span class="sd">        context, :attr:`.Context.valid` must be checked to make sure it is.</span>
+<span class="sd">        If the context is not valid then it is not a valid candidate to be</span>
+<span class="sd">        invoked under :meth:`~.Bot.invoke`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        message: :class:`discord.Message`</span>
+<span class="sd">            The message to get the invocation context from.</span>
+<span class="sd">        cls</span>
+<span class="sd">            The factory class that will be used to create the context.</span>
+<span class="sd">            By default, this is :class:`.Context`. Should a custom</span>
+<span class="sd">            class be provided, it must be similar enough to :class:`.Context`\&#39;s</span>
+<span class="sd">            interface.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`.Context`</span>
+<span class="sd">            The invocation context. The type of this can change via the</span>
+<span class="sd">            ``cls`` parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">view</span> <span class="o">=</span> <span class="n">StringView</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">ctx</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span> <span class="n">bot</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip_check</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ctx</span>
+
+        <span class="n">prefix</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_prefix</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">invoked_prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">view</span><span class="o">.</span><span class="n">skip_string</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">ctx</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># if the context class&#39; __init__ consumes something from the view this</span>
+                <span class="c1"># will be wrong.  That seems unreasonable though.</span>
+                <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">prefix</span><span class="p">)):</span>
+                    <span class="n">invoked_prefix</span> <span class="o">=</span> <span class="n">discord</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">skip_string</span><span class="p">,</span> <span class="n">prefix</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">ctx</span>
+
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;get_prefix must return either a string or a list of string, &quot;</span>
+                                    <span class="s2">&quot;not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+                <span class="c1"># It&#39;s possible a bad command_prefix got us here.</span>
+                <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">prefix</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Iterable command_prefix or list returned from get_prefix must &quot;</span>
+                                        <span class="s2">&quot;contain only strings, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+                <span class="c1"># Getting here shouldn&#39;t happen</span>
+                <span class="k">raise</span>
+
+        <span class="n">invoker</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_word</span><span class="p">()</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">invoked_with</span> <span class="o">=</span> <span class="n">invoker</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">invoked_prefix</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_commands</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">invoker</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ctx</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">invoke</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;|coro|</span>
+
+<span class="sd">        Invokes the command given under the invocation context and</span>
+<span class="sd">        handles all the internal event dispatch mechanisms.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        ctx: :class:`.Context`</span>
+<span class="sd">            The invocation context to invoke.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">command</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_run</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">call_once</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                    <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">CommandError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">dispatch_error</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s1">&#39;command_completion&#39;</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ctx</span><span class="o">.</span><span class="n">invoked_with</span><span class="p">:</span>
+            <span class="n">exc</span> <span class="o">=</span> <span class="n">errors</span><span class="o">.</span><span class="n">CommandNotFound</span><span class="p">(</span><span class="s1">&#39;Command &quot;</span><span class="si">{}</span><span class="s1">&quot; is not found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">invoked_with</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s1">&#39;command_error&#39;</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">process_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;|coro|</span>
+
+<span class="sd">        This function processes the commands that have been registered</span>
+<span class="sd">        to the bot and other groups. Without this coroutine, none of the</span>
+<span class="sd">        commands will be triggered.</span>
+
+<span class="sd">        By default, this coroutine is called inside the :func:`.on_message`</span>
+<span class="sd">        event. If you choose to override the :func:`.on_message` event, then</span>
+<span class="sd">        you should invoke this coroutine as well.</span>
+
+<span class="sd">        This is built using other low level tools, and is equivalent to a</span>
+<span class="sd">        call to :meth:`~.Bot.get_context` followed by a call to :meth:`~.Bot.invoke`.</span>
+
+<span class="sd">        This also checks if the message&#39;s author is a bot and doesn&#39;t</span>
+<span class="sd">        call :meth:`~.Bot.get_context` or :meth:`~.Bot.invoke` if so.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        message: :class:`discord.Message`</span>
+<span class="sd">            The message to process commands for.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">bot</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">ctx</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_commands</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Bot</span><span class="p">(</span><span class="n">BotBase</span><span class="p">,</span> <span class="n">discord</span><span class="o">.</span><span class="n">Client</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents a discord bot.</span>
+
+<span class="sd">    This class is a subclass of :class:`discord.Client` and as a result</span>
+<span class="sd">    anything that you can do with a :class:`discord.Client` you can do with</span>
+<span class="sd">    this bot.</span>
+
+<span class="sd">    This class also subclasses :class:`.GroupMixin` to provide the functionality</span>
+<span class="sd">    to manage commands.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    -----------</span>
+<span class="sd">    command_prefix</span>
+<span class="sd">        The command prefix is what the message content must contain initially</span>
+<span class="sd">        to have a command invoked. This prefix could either be a string to</span>
+<span class="sd">        indicate what the prefix should be, or a callable that takes in the bot</span>
+<span class="sd">        as its first parameter and :class:`discord.Message` as its second</span>
+<span class="sd">        parameter and returns the prefix. This is to facilitate &quot;dynamic&quot;</span>
+<span class="sd">        command prefixes. This callable can be either a regular function or</span>
+<span class="sd">        a coroutine.</span>
+
+<span class="sd">        An empty string as the prefix always matches, enabling prefix-less</span>
+<span class="sd">        command invocation. While this may be useful in DMs it should be avoided</span>
+<span class="sd">        in servers, as it&#39;s likely to cause performance issues and unintended</span>
+<span class="sd">        command invocations.</span>
+
+<span class="sd">        The command prefix could also be an iterable of strings indicating that</span>
+<span class="sd">        multiple checks for the prefix should be used and the first one to</span>
+<span class="sd">        match will be the invocation prefix. You can get this prefix via</span>
+<span class="sd">        :attr:`.Context.prefix`. To avoid confusion empty iterables are not</span>
+<span class="sd">        allowed.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            When passing multiple prefixes be careful to not pass a prefix</span>
+<span class="sd">            that matches a longer prefix occurring later in the sequence.  For</span>
+<span class="sd">            example, if the command prefix is ``(&#39;!&#39;, &#39;!?&#39;)``  the ``&#39;!?&#39;``</span>
+<span class="sd">            prefix will never be matched to any message as the previous one</span>
+<span class="sd">            matches messages starting with ``!?``. This is especially important</span>
+<span class="sd">            when passing an empty string, it should always be last as no prefix</span>
+<span class="sd">            after it will be matched.</span>
+<span class="sd">    case_insensitive: :class:`bool`</span>
+<span class="sd">        Whether the commands should be case insensitive. Defaults to ``False``. This</span>
+<span class="sd">        attribute does not carry over to groups. You must set it to every group if</span>
+<span class="sd">        you require group commands to be case insensitive as well.</span>
+<span class="sd">    description: :class:`str`</span>
+<span class="sd">        The content prefixed into the default help message.</span>
+<span class="sd">    self_bot: :class:`bool`</span>
+<span class="sd">        If ``True``, the bot will only listen to commands invoked by itself rather</span>
+<span class="sd">        than ignoring itself. If ``False`` (the default) then the bot will ignore</span>
+<span class="sd">        itself. This cannot be changed once initialised.</span>
+<span class="sd">    help_command: Optional[:class:`.HelpCommand`]</span>
+<span class="sd">        The help command implementation to use. This can be dynamically</span>
+<span class="sd">        set at runtime. To remove the help command pass ``None``. For more</span>
+<span class="sd">        information on implementing a help command, see :ref:`ext_commands_help_command`.</span>
+<span class="sd">    owner_id: Optional[:class:`int`]</span>
+<span class="sd">        The user ID that owns the bot. If this is not set and is then queried via</span>
+<span class="sd">        :meth:`.is_owner` then it is fetched automatically using</span>
+<span class="sd">        :meth:`~.Bot.application_info`.</span>
+<span class="sd">    owner_ids: Optional[Collection[:class:`int`]]</span>
+<span class="sd">        The user IDs that owns the bot. This is similar to `owner_id`.</span>
+<span class="sd">        If this is not set and the application is team based, then it is</span>
+<span class="sd">        fetched automatically using :meth:`~.Bot.application_info`.</span>
+<span class="sd">        For performance reasons it is recommended to use a :class:`set`</span>
+<span class="sd">        for the collection. You cannot set both `owner_id` and `owner_ids`.</span>
+
+<span class="sd">        .. versionadded:: 1.3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">AutoShardedBot</span><span class="p">(</span><span class="n">BotBase</span><span class="p">,</span> <span class="n">discord</span><span class="o">.</span><span class="n">AutoShardedClient</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is similar to :class:`.Bot` except that it is inherited from</span>
+<span class="sd">    :class:`discord.AutoShardedClient` instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">ncfacbot  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, haliphax.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.
+    </div>
+  </body>
+</html>
