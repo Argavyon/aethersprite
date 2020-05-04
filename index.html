@@ -269,104 +269,6 @@ execute a command.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-ncfacbot.commands.closest">
-<span id="commands"></span><h2>Commands<a class="headerlink" href="#module-ncfacbot.commands.closest" title="Permalink to this headline">¶</a></h2>
-<p>Closest tick calculator command</p>
-<span class="target" id="module-ncfacbot.commands.github"></span><p>GitHub URL command</p>
-<span class="target" id="module-ncfacbot.commands.gmt"></span><p>GMT time check and offset command</p>
-<span class="target" id="module-ncfacbot.commands.raid"></span><p>Raid scheduling/announcing command</p>
-<dl class="py data">
-<dt id="ncfacbot.commands.raid.INPUT_FORMAT">
-<code class="sig-prename descclassname">ncfacbot.commands.raid.</code><code class="sig-name descname">INPUT_FORMAT</code><em class="property"> = '%Y-%m-%d %H:%M %z'</em><a class="headerlink" href="#ncfacbot.commands.raid.INPUT_FORMAT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Expected format for schedule input</p>
-</dd></dl>
-
-<dl class="py data">
-<dt id="ncfacbot.commands.raid.MSG_NO_RAID">
-<code class="sig-prename descclassname">ncfacbot.commands.raid.</code><code class="sig-name descname">MSG_NO_RAID</code><em class="property"> = ':person_shrugging: There is no scheduled raid.'</em><a class="headerlink" href="#ncfacbot.commands.raid.MSG_NO_RAID" title="Permalink to this definition">¶</a></dt>
-<dd><p>No raid message</p>
-</dd></dl>
-
-<dl class="py class">
-<dt id="ncfacbot.commands.raid.Raid">
-<em class="property">class </em><code class="sig-prename descclassname">ncfacbot.commands.raid.</code><code class="sig-name descname">Raid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bot</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/commands/raid.html#Raid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.commands.raid.Raid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raid commands</p>
-<p>NOTE: A raid will not actually be scheduled until both a schedule AND a target have been set. Until then, check and cancel commands will get a “There is no scheduled raid” message.</p>
-</dd></dl>
-
-<span class="target" id="module-ncfacbot.commands.settings"></span><p>Settings commands; store, view, and manipulate settings</p>
-<dl class="py class">
-<dt id="ncfacbot.commands.settings.Settings">
-<em class="property">class </em><code class="sig-prename descclassname">ncfacbot.commands.settings.</code><code class="sig-name descname">Settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bot</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/commands/settings.html#Settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.commands.settings.Settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings commands</p>
-<p>View settings, change settings, reset settings, and view settings descriptions.</p>
-</dd></dl>
-
-<span class="target" id="module-ncfacbot.commands.shop"></span><p>Shopping List commands module</p>
-<dl class="py data">
-<dt id="ncfacbot.commands.shop.COMPONENTS">
-<code class="sig-prename descclassname">ncfacbot.commands.shop.</code><code class="sig-name descname">COMPONENTS</code><em class="property"> = {'bag of industrial plastic': 'Bag of Industrial Plastic', 'batch of leather': 'Batch of Leather', 'batch of mushrooms': 'Batch of Mushrooms', 'blood ice': 'Blood Ice', 'bottle of holy water': 'Bottle of Holy Water', 'bottle of paradise water': 'Bottle of Paradise Water', 'bunch of daisies': 'Bunch of Daisies', 'bunch of lilies': 'Bunch of Lilies', 'bunch of paradise lilies': 'Bunch of Paradise Lilies', 'chunk of brass': 'Chunk of Brass', 'chunk of iron': 'Chunk of Iron', 'chunk of ivory': 'Chunk of Ivory', 'chunk of onyx': 'Chunk of Onyx', 'chunk of steel': 'Chunk of Steel', 'chunk of stygian iron': 'Chunk of Stygian Iron', 'common': 'Common Component', 'femur': 'Femur', 'gold ingot': 'Gold Ingot', 'handful of grave dirt': 'Handful of Grave Dirt', 'humerus': 'Humerus', 'lead brick': 'Lead Brick', 'length of chain': 'Length of Chain', 'length of rope': 'Length of Rope', 'patch of lichen': 'Patch of Lichen', 'patch of moss': 'Patch of Moss', 'piece of stygian coal': 'Piece of Stygian Coal', 'piece of wood': 'Piece of Wood', 'rare': 'Rare Component', 'rose': 'Rose', 'silver ingot': 'Silver Ingot', 'skull': 'Skull', 'small bottle of gunpowder': 'Small Bottle of Gunpowder', 'soul ice': 'Soul Ice', 'spool of copper wire': 'Spool of Copper Wire', 'sprig of nightshade': 'Sprig of Nightshade', 'unc': 'Uncommon Component'}</em><a class="headerlink" href="#ncfacbot.commands.shop.COMPONENTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hard-coded list of components keyed by lowercase item name for lookup</p>
-</dd></dl>
-
-<dl class="py class">
-<dt id="ncfacbot.commands.shop.Shop">
-<em class="property">class </em><code class="sig-prename descclassname">ncfacbot.commands.shop.</code><code class="sig-name descname">Shop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bot</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/commands/shop.html#Shop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.commands.shop.Shop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shopping commands</p>
-<p>Used to maintain a personal shopping list of crafting/alchemy ingredients</p>
-</dd></dl>
-
-<dl class="py class">
-<dt id="ncfacbot.commands.shop.ShoppingList">
-<em class="property">class </em><code class="sig-prename descclassname">ncfacbot.commands.shop.</code><code class="sig-name descname">ShoppingList</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nick</span></em>, <em class="sig-param"><span class="n">userid</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/commands/shop.html#ShoppingList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.commands.shop.ShoppingList" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shopping list; stores user’s information and item requests</p>
-<dl class="py attribute">
-<dt id="ncfacbot.commands.shop.ShoppingList.items">
-<code class="sig-name descname">items</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.commands.shop.ShoppingList.items" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of item requests</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ncfacbot.commands.shop.ShoppingList.nick">
-<code class="sig-name descname">nick</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.commands.shop.ShoppingList.nick" title="Permalink to this definition">¶</a></dt>
-<dd><p>User’s nickname (default’s to username)</p>
-</dd></dl>
-
-</dd></dl>
-
-<span class="target" id="module-ncfacbot.commands.sm"></span><p>Sorcerers Might countdown command</p>
-<dl class="py data">
-<dt id="ncfacbot.commands.sm.SM_LIMIT">
-<code class="sig-prename descclassname">ncfacbot.commands.sm.</code><code class="sig-name descname">SM_LIMIT</code><em class="property"> = 55</em><a class="headerlink" href="#ncfacbot.commands.sm.SM_LIMIT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximum allowed timer length</p>
-</dd></dl>
-
-<dl class="py data">
-<dt id="ncfacbot.commands.sm.countdowns">
-<code class="sig-prename descclassname">ncfacbot.commands.sm.</code><code class="sig-name descname">countdowns</code><em class="property"> = {}</em><a class="headerlink" href="#ncfacbot.commands.sm.countdowns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Countdown callback handles</p>
-</dd></dl>
-
-<dl class="py data">
-<dt id="ncfacbot.commands.sm.schedule">
-<code class="sig-prename descclassname">ncfacbot.commands.sm.</code><code class="sig-name descname">schedule</code><em class="property"> = SqliteDict(sm.sqlite3)</em><a class="headerlink" href="#ncfacbot.commands.sm.schedule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Countdown schedule persisted to database file</p>
-</dd></dl>
-
-<span class="target" id="module-ncfacbot.commands.tick"></span><p>Next game tick command</p>
-<dl class="py data">
-<dt id="ncfacbot.commands.tick.SILLY">
-<code class="sig-prename descclassname">ncfacbot.commands.tick.</code><code class="sig-name descname">SILLY</code><em class="property"> = (', when the west was still wild...', ', when I was a younger bot and still had all my wits about me!', '... in the before-time, the long-long-ago.', ', if you can believe that!', ', okay?', '! You remember that?! Man, those were some good times.')</em><a class="headerlink" href="#ncfacbot.commands.tick.SILLY" title="Permalink to this definition">¶</a></dt>
-<dd><p>Silly stuff to say for past ticks</p>
-</dd></dl>
-
-<dl class="py data">
-<dt id="ncfacbot.commands.tick.TICK_LIMIT">
-<code class="sig-prename descclassname">ncfacbot.commands.tick.</code><code class="sig-name descname">TICK_LIMIT</code><em class="property"> = 1000</em><a class="headerlink" href="#ncfacbot.commands.tick.TICK_LIMIT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Future/past tick limit</p>
-</dd></dl>
-
-</div>
 </div>
 
 
@@ -381,7 +283,6 @@ execute a command.</p>
 <li><a class="reference internal" href="#module-ncfacbot">Main</a></li>
 <li><a class="reference internal" href="#module-ncfacbot.common">Common</a></li>
 <li><a class="reference internal" href="#module-ncfacbot.settings">Settings</a></li>
-<li><a class="reference internal" href="#module-ncfacbot.commands.closest">Commands</a></li>
 </ul>
 </li>
 </ul>
