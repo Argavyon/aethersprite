@@ -52,9 +52,27 @@
 </dd></dl>
 
 <dl class="py data">
+<dt id="ncfacbot.common.DAY">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">DAY</code><em class="property"> = 86400</em><a class="headerlink" href="#ncfacbot.common.DAY" title="Permalink to this definition">¶</a></dt>
+<dd><p>One day in seconds</p>
+</dd></dl>
+
+<dl class="py data">
 <dt id="ncfacbot.common.FIFTEEN_MINS">
 <code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">FIFTEEN_MINS</code><em class="property"> = 900</em><a class="headerlink" href="#ncfacbot.common.FIFTEEN_MINS" title="Permalink to this definition">¶</a></dt>
 <dd><p>15 minutes in seconds</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="ncfacbot.common.HOUR">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">HOUR</code><em class="property"> = 3600</em><a class="headerlink" href="#ncfacbot.common.HOUR" title="Permalink to this definition">¶</a></dt>
+<dd><p>One hour in seconds</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="ncfacbot.common.MINUTE">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">MINUTE</code><em class="property"> = 60</em><a class="headerlink" href="#ncfacbot.common.MINUTE" title="Permalink to this definition">¶</a></dt>
+<dd><p>One minute in seconds</p>
 </dd></dl>
 
 <dl class="py data">
@@ -70,21 +88,73 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="ncfacbot.common.get_datetime_chunks">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">get_datetime_chunks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#get_datetime_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.get_datetime_chunks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Search string for chunks of datetime parameters, like 5d 10h 15m, etc.</p>
+<dt id="ncfacbot.common.get_next_tick">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">get_next_tick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#get_next_tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.get_next_tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate future tick as datetime in GMT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>int</em>) – The number of ticks forward to calculate</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The time of the calculated tick</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ncfacbot.common.get_next_tick">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">get_next_tick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#get_next_tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.get_next_tick" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate future tick as datetime in GMT</p>
+<dt id="ncfacbot.common.get_timespan_chunks">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">get_timespan_chunks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#get_timespan_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.get_timespan_chunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search string for chunks of tiimespan parameters, like 5d 10h 15m, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> – The string to search</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(days:</span> <span class="pre">int,</span> <span class="pre">hours:</span> <span class="pre">int,</span> <span class="pre">minutes:</span> <span class="pre">int)</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ncfacbot.common.normalize_username">
 <code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">normalize_username</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">author</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#normalize_username"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.normalize_username" title="Permalink to this definition">¶</a></dt>
-<dd><p>Normalize username for use in messages</p>
+<dd><p>Normalize username for use in messages. If the user has a nick set, that
+will be used; otherwise, their plain username will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>author</strong> – The User object to normalize</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The normalized name</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.common.seconds_to_str">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">seconds_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#seconds_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.seconds_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a span of seconds into a human-readable format (e.g., “5 day(s)
+8 hour(s) 36 second(s)”).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ts</strong> (<em>int</em>) – The span to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The human-readable representation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
