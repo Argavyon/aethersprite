@@ -157,7 +157,7 @@
 
 
 <div class="viewcode-block" id="require_admin"><a class="viewcode-back" href="../../index.html#ncfacbot.settings.require_admin">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">require_admin</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
-    <span class="s2">&quot;Decorator for requiring admin/mod privileges to execute a command.&quot;</span>
+    <span class="s2">&quot;Check for requiring admin/mod privileges to execute a command.&quot;</span>
 
     <span class="n">perms</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">permissions_in</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
 
@@ -170,10 +170,18 @@
 
 <div class="viewcode-block" id="require_roles"><a class="viewcode-back" href="../../index.html#ncfacbot.settings.require_roles">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">require_roles</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decorator for requiring particular roles (loaded from the given setting) to</span>
+<span class="sd">    Check for requiring particular roles (loaded from the given setting) to</span>
 <span class="sd">    execute a command. For more than one setting (if ``setting`` is a</span>
 <span class="sd">    list/tuple), the aggregate list will be used. Membership in at least one of</span>
 <span class="sd">    the roles pulled from the settings is required to pass the filter.</span>
+
+<span class="sd">    Example, if your setting with role(s) is ``setting.name``:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from functools import partial</span>
+<span class="sd">        from ncfacbot.common import require_roles</span>
+<span class="sd">        authz = partial(require_roles setting=&#39;setting.name&#39;)</span>
 
 <span class="sd">    :param setting: The name of the setting to pull the roles from</span>
 <span class="sd">    :type setting: str or list or tuple</span>
