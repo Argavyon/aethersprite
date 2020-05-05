@@ -25,6 +25,8 @@ _This bot is a work in progress. Please excuse my mess..._
 - `lobotomy` _(hidden)_
   A collection of commands for enabling/disabling other commands per-server
   and per-channel
+- `nick`
+  Change the bot's nickname per-server
 - `raid`
   A collection of commands for scheduling and announcing raids
 - `settings`
@@ -43,7 +45,7 @@ _This bot is a work in progress. Please excuse my mess..._
 - Set command prefix per-server and per-channel
 - Common functions to pull/validate roles and channels from settings
 - Split bot framework into separate project, leave NC commands here
-- Command to change bot's nickname on current server
+- [TOML] configuration file(s) for immutable settings
 
 ## Pipe dreams
 
@@ -54,3 +56,4 @@ _This bot is a work in progress. Please excuse my mess..._
 [discord.py]: https://discordpy.readthedocs.io
 [Discord]: https://discordapp.com
 [Nexus Clash]: https://www.nexusclash.com
+[TOML]: https://github.com/toml-lang/toml
