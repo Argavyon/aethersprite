@@ -14,7 +14,7 @@ help:
 github:
 	@make clean
 	@make html
-	@rm *.sqlite3
+	@bash -c '[ -z "$(ls -l | grep '\.sqlite3')" ] && rm *.sqlite3'
+	@bash -c '[ -z "$(ls -l .. | grep '\.js')" ] && rm -rf ../*.js ../*.html ../_*'
 	@cp -a _build/html/. ../
-	@rm ../objects.inv
-	@rm ../.buildinfo
+	@rm ../objects.inv ../.buildinfo
