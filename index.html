@@ -359,6 +359,7 @@ the roles pulled from the settings is required to pass the filter.</p>
 <span class="kn">from</span> <span class="nn">discord.ext</span> <span class="kn">import</span> <span class="n">commands</span>
 <span class="kn">from</span> <span class="nn">ncfacbot.authz</span> <span class="kn">import</span> <span class="n">require_roles</span>
 <span class="kn">from</span> <span class="nn">ncfacbot.common</span> <span class="kn">import</span> <span class="n">command</span>
+
 <span class="n">authz</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">require_roles</span><span class="p">,</span> <span class="n">setting</span><span class="o">=</span><span class="s1">&#39;setting.name&#39;</span><span class="p">)</span>
 
 <span class="nd">@command</span><span class="p">()</span>
