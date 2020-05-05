@@ -38,16 +38,13 @@
 <span></span><span class="s2">&quot;Common functions module&quot;</span>
 
 <span class="c1"># stdlib</span>
-<span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">get_event_loop</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span><span class="p">,</span> <span class="n">floor</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="c1"># 3rd party</span>
-<span class="kn">from</span> <span class="nn">discord</span> <span class="kn">import</span> <span class="n">DMChannel</span>
-<span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">check</span><span class="p">,</span> <span class="n">command</span> <span class="k">as</span> <span class="n">command_</span><span class="p">,</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">check</span><span class="p">,</span> <span class="n">command</span> <span class="k">as</span> <span class="n">command_</span>
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">.lobotomy</span> <span class="kn">import</span> <span class="n">check_lobotomy</span>
 
@@ -82,17 +79,6 @@
         <span class="k">return</span> <span class="n">check</span><span class="p">(</span><span class="n">check_lobotomy</span><span class="p">)(</span><span class="n">command_</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">f</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">wrap</span></div>
-
-
-<div class="viewcode-block" id="channel_only"><a class="viewcode-back" href="../../index.html#ncfacbot.common.channel_only">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">channel_only</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
-    <span class="s2">&quot;Check for bot commands that should only operate in a channel&quot;</span>
-
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="ow">is</span> <span class="n">DMChannel</span><span class="p">:</span>
-        <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;This command must be used in a channel.&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="get_timespan_chunks"><a class="viewcode-back" href="../../index.html#ncfacbot.common.get_timespan_chunks">[docs]</a><span class="k">def</span> <span class="nf">get_timespan_chunks</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
@@ -146,92 +132,6 @@
         <span class="n">name</span> <span class="o">=</span> <span class="n">author</span><span class="o">.</span><span class="n">nick</span>
 
     <span class="k">return</span> <span class="n">name</span></div>
-
-
-<div class="viewcode-block" id="require_admin"><a class="viewcode-back" href="../../index.html#ncfacbot.common.require_admin">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">require_admin</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
-    <span class="s2">&quot;Check for requiring admin/mod privileges to execute a command.&quot;</span>
-
-    <span class="n">perms</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">permissions_in</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">perms</span><span class="o">.</span><span class="n">administrator</span> <span class="ow">or</span> <span class="n">perms</span><span class="o">.</span><span class="n">manage_channels</span> <span class="ow">or</span> <span class="n">perms</span><span class="o">.</span><span class="n">manage_guild</span> \
-            <span class="ow">or</span> <span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;NCFACBOT_OWNER&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="kc">True</span>
-
-    <span class="k">return</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="require_roles"><a class="viewcode-back" href="../../index.html#ncfacbot.common.require_roles">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">require_roles</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check for requiring particular roles (loaded from the given setting) to</span>
-<span class="sd">    execute a command. For more than one setting (if ``setting`` is a</span>
-<span class="sd">    list/tuple), the aggregate list will be used. Membership in at least one of</span>
-<span class="sd">    the roles pulled from the settings is required to pass the filter.</span>
-
-<span class="sd">    Example, if your setting with role(s) is ``setting.name``:</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        from functools import partial</span>
-<span class="sd">        from discord.ext import commands</span>
-<span class="sd">        from ncfacbot.common import bot_command, require_roles</span>
-<span class="sd">        authz = partial(require_roles, setting=&#39;setting.name&#39;)</span>
-
-<span class="sd">        @bot_command()</span>
-<span class="sd">        @commands.check(authz)</span>
-<span class="sd">        async def my_command(ctx):</span>
-<span class="sd">            await ctx.send(&#39;You are authorized. Congratulations!&#39;)</span>
-
-<span class="sd">    :param setting: The name of the setting to pull the roles from</span>
-<span class="sd">    :type setting: str or list or tuple</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># import at call-time to avoid cyclic reference</span>
-    <span class="kn">from</span> <span class="nn">.settings</span> <span class="kn">import</span> <span class="n">settings</span>
-
-    <span class="n">perms</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">permissions_in</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
-    <span class="n">pass_</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="k">if</span> <span class="n">perms</span><span class="o">.</span><span class="n">administrator</span> <span class="ow">or</span> <span class="n">perms</span><span class="o">.</span><span class="n">manage_channels</span> <span class="ow">or</span> <span class="n">perms</span><span class="o">.</span><span class="n">manage_guild</span> \
-            <span class="ow">or</span> <span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;NCFACBOT_OWNER&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="p">)):</span>
-        <span class="c1"># Superusers get a pass</span>
-        <span class="n">pass_</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="n">values</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">kind</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">setting</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="n">setting</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">setting</span><span class="p">:</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-
-        <span class="n">values</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;setting must be str, list, or tuple&#39;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span> \
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">roles</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">roles</span>
-                           <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">]):</span>
-        <span class="n">pass_</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">pass_</span><span class="p">:</span>
-        <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="n">POLICE_OFFICER</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> attempted to access unauthorized &#39;</span>
-                 <span class="sa">f</span><span class="s1">&#39;command </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="seconds_to_str"><a class="viewcode-back" href="../../index.html#ncfacbot.common.seconds_to_str">[docs]</a><span class="k">def</span> <span class="nf">seconds_to_str</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>

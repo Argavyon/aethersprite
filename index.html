@@ -106,12 +106,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="ncfacbot.common.channel_only">
-<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">channel_only</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#channel_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.channel_only" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check for bot commands that should only operate in a channel</p>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ncfacbot.common.command">
 <code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">command</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator to add default checks to new commands.</p>
@@ -165,38 +159,6 @@ will be used; otherwise, their plain username will be returned.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ncfacbot.common.require_admin">
-<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">require_admin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#require_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.require_admin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check for requiring admin/mod privileges to execute a command.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ncfacbot.common.require_roles">
-<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.require_roles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check for requiring particular roles (loaded from the given setting) to
-execute a command. For more than one setting (if <code class="docutils literal notranslate"><span class="pre">setting</span></code> is a
-list/tuple), the aggregate list will be used. Membership in at least one of
-the roles pulled from the settings is required to pass the filter.</p>
-<p>Example, if your setting with role(s) is <code class="docutils literal notranslate"><span class="pre">setting.name</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">discord.ext</span> <span class="kn">import</span> <span class="n">commands</span>
-<span class="kn">from</span> <span class="nn">ncfacbot.common</span> <span class="kn">import</span> <span class="n">bot_command</span><span class="p">,</span> <span class="n">require_roles</span>
-<span class="n">authz</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">require_roles</span><span class="p">,</span> <span class="n">setting</span><span class="o">=</span><span class="s1">&#39;setting.name&#39;</span><span class="p">)</span>
-
-<span class="nd">@bot_command</span><span class="p">()</span>
-<span class="nd">@commands</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">authz</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">my_command</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
-    <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;You are authorized. Congratulations!&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>setting</strong> (<em>str</em><em> or </em><em>list</em><em> or </em><em>tuple</em>) – The name of the setting to pull the roles from</p>
 </dd>
 </dl>
 </dd></dl>
@@ -325,6 +287,49 @@ the roles pulled from the settings is required to pass the filter.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-ncfacbot.authz">
+<span id="authorization"></span><h2>Authorization<a class="headerlink" href="#module-ncfacbot.authz" title="Permalink to this headline">¶</a></h2>
+<p>Authorization module</p>
+<dl class="py function">
+<dt id="ncfacbot.authz.channel_only">
+<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.authz.</code><code class="sig-name descname">channel_only</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/authz.html#channel_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.authz.channel_only" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for bot commands that should only operate in a channel</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.authz.require_admin">
+<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.authz.</code><code class="sig-name descname">require_admin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/authz.html#require_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.authz.require_admin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for requiring admin/mod privileges to execute a command.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.authz.require_roles">
+<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.authz.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/authz.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.authz.require_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for requiring particular roles (loaded from the given setting) to
+execute a command. For more than one setting (if <code class="docutils literal notranslate"><span class="pre">setting</span></code> is a
+list/tuple), the aggregate list will be used. Membership in at least one of
+the roles pulled from the settings is required to pass the filter.</p>
+<p>Example, if your setting with role(s) is <code class="docutils literal notranslate"><span class="pre">setting.name</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">discord.ext</span> <span class="kn">import</span> <span class="n">commands</span>
+<span class="kn">from</span> <span class="nn">ncfacbot.authz</span> <span class="kn">import</span> <span class="n">require_roles</span>
+<span class="kn">from</span> <span class="nn">ncfacbot.common</span> <span class="kn">import</span> <span class="n">command</span>
+<span class="n">authz</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">require_roles</span><span class="p">,</span> <span class="n">setting</span><span class="o">=</span><span class="s1">&#39;setting.name&#39;</span><span class="p">)</span>
+
+<span class="nd">@command</span><span class="p">()</span>
+<span class="nd">@commands</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">authz</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">my_command</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;You are authorized. Congratulations!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>setting</strong> (<em>str</em><em> or </em><em>list</em><em> or </em><em>tuple</em>) – The name of the setting to pull the roles from</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -339,6 +344,7 @@ the roles pulled from the settings is required to pass the filter.</p>
 <li><a class="reference internal" href="#module-ncfacbot">Main</a></li>
 <li><a class="reference internal" href="#module-ncfacbot.common">Common</a></li>
 <li><a class="reference internal" href="#module-ncfacbot.settings">Settings</a></li>
+<li><a class="reference internal" href="#module-ncfacbot.authz">Authorization</a></li>
 </ul>
 </li>
 </ul>

@@ -26,3 +26,10 @@ Settings
 
 .. automodule:: ncfacbot.settings
     :members:
+
+
+Authorization
+-------------
+
+.. automodule:: ncfacbot.authz
+    :members:
