@@ -73,7 +73,11 @@
 
 
 <div class="viewcode-block" id="command"><a class="viewcode-back" href="../../index.html#ncfacbot.common.command">[docs]</a><span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="s2">&quot;Decorator to add default checks to new commands.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator to add default checks to new commands. This is just a thin</span>
+<span class="sd">    wrapper around :func:`discord.ext.commands.command`, and will accept the</span>
+<span class="sd">    same arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">check</span><span class="p">(</span><span class="n">check_lobotomy</span><span class="p">)(</span><span class="n">command_</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">f</span><span class="p">))</span>
