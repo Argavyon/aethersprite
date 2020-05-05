@@ -1,16 +1,9 @@
 "Setting module"
 
 # stdlib
-from asyncio import get_event_loop
-from functools import wraps
-from os import environ
 import typing
 # 3rd party
-from discord.ext.commands import Context
 from sqlitedict import SqliteDict
-# local
-from . import log
-from .common import THUMBS_DOWN
 
 # TODO cleanup settings for missing servers/channels on startup
 
@@ -112,6 +105,8 @@ def register(name: str, default: str, validator: callable,
     :param validator: The validation function for the setting's value
     :param channel: If this is a channel (and not a guild) setting
     """
+
+    global settings
 
     if name in settings:
         raise Exception(f'Setting already exists: {name}')
