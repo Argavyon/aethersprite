@@ -155,6 +155,28 @@
     <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Setting</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">validator</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="require_admin"><a class="viewcode-back" href="../../index.html#ncfacbot.settings.require_admin">[docs]</a><span class="k">def</span> <span class="nf">require_admin</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">callable</span><span class="p">):</span>
+    <span class="s2">&quot;Decorator for requiring admin/mod privileges to execute a command.&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ctx</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Context</span><span class="p">:</span>
+                <span class="n">ctx</span> <span class="o">=</span> <span class="n">a</span>
+
+                <span class="k">break</span>
+
+        <span class="n">perms</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">permissions_in</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">perms</span><span class="o">.</span><span class="n">administrator</span> <span class="ow">or</span> <span class="n">perms</span><span class="o">.</span><span class="n">manage_channels</span> <span class="ow">or</span> <span class="n">perms</span><span class="o">.</span><span class="n">manage_guild</span> \
+                <span class="ow">or</span> <span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;NCFACBOT_OWNER&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrap</span></div>
+
+
 <div class="viewcode-block" id="require_roles"><a class="viewcode-back" href="../../index.html#ncfacbot.settings.require_roles">[docs]</a><span class="k">def</span> <span class="nf">require_roles</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator for requiring particular roles (loaded from the given setting) to</span>

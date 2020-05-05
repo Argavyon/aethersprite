@@ -112,9 +112,21 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="ncfacbot.common.bot_command">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">bot_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#bot_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.bot_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to add default checks to bot commands.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ncfacbot.common.channel_only">
 <code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">channel_only</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#channel_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.channel_only" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator for bot commands that should only operate in a channel</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.common.cog_command">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">cog_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#cog_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.cog_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to add default checks to Cog commands.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -284,6 +296,12 @@ will be used; otherwise, their plain username will be returned.</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.settings.require_admin">
+<code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">require_admin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">callable</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#require_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.require_admin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for requiring admin/mod privileges to execute a command.</p>
 </dd></dl>
 
 <dl class="py function">
