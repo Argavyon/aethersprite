@@ -197,14 +197,14 @@ decorate a method, assign the handler during <code class="docutils literal notra
         <span class="bp">self</span><span class="o">.</span><span class="n">on_ready</span> <span class="o">=</span> <span class="n">startup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_ready</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-        <span class="c1"># don&#39;t care about the bot parameter here, but still have to</span>
-        <span class="c1"># include it to avoid exceptions</span>
+        <span class="c1"># don&#39;t care about the bot parameter here, but still have to include it</span>
+        <span class="c1"># to avoid exceptions</span>
         <span class="k">pass</span>
 
-<span class="nd">@startup</span>
-<span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="n">bot</span><span class="p">):</span>
-    <span class="c1"># since we&#39;re not a Cog, we need the bot reference to do stuff</span>
-    <span class="k">pass</span>
+        <span class="nd">@startup</span>
+        <span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="n">bot</span><span class="p">):</span>
+            <span class="c1"># since we&#39;re not a Cog, we need the bot reference to do stuff</span>
+            <span class="k">pass</span>
 </pre></div>
 </div>
 </dd></dl>

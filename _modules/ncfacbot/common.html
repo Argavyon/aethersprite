@@ -184,14 +184,14 @@
 <span class="sd">                self.on_ready = startup(self.on_ready)</span>
 
 <span class="sd">            def on_ready(self, _):</span>
-<span class="sd">                # don&#39;t care about the bot parameter here, but still have to</span>
-<span class="sd">                # include it to avoid exceptions</span>
+<span class="sd">                # don&#39;t care about the bot parameter here, but still have to include it</span>
+<span class="sd">                # to avoid exceptions</span>
 <span class="sd">                pass</span>
 
-<span class="sd">        @startup</span>
-<span class="sd">        def on_ready(bot):</span>
-<span class="sd">            # since we&#39;re not a Cog, we need the bot reference to do stuff</span>
-<span class="sd">            pass</span>
+<span class="sd">                @startup</span>
+<span class="sd">                def on_ready(bot):</span>
+<span class="sd">                    # since we&#39;re not a Cog, we need the bot reference to do stuff</span>
+<span class="sd">                    pass</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">global</span> <span class="n">startup_handlers</span>
