@@ -47,7 +47,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="c1"># 3rd party</span>
 <span class="kn">from</span> <span class="nn">discord</span> <span class="kn">import</span> <span class="n">DMChannel</span>
-<span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">check</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">check</span><span class="p">,</span> <span class="n">command</span> <span class="k">as</span> <span class="n">command_</span><span class="p">,</span> <span class="n">Context</span>
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">bot</span>
 <span class="kn">from</span> <span class="nn">.lobotomy</span> <span class="kn">import</span> <span class="n">check_lobotomy</span>
@@ -76,20 +76,11 @@
 <span class="n">startup_handlers</span> <span class="o">=</span> <span class="p">[]</span>
 
 
-<div class="viewcode-block" id="bot_command"><a class="viewcode-back" href="../../index.html#ncfacbot.common.bot_command">[docs]</a><span class="k">def</span> <span class="nf">bot_command</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="s2">&quot;Decorator to add default checks to bot commands.&quot;</span>
+<div class="viewcode-block" id="command"><a class="viewcode-back" href="../../index.html#ncfacbot.common.command">[docs]</a><span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="s2">&quot;Decorator to add default checks to new commands.&quot;</span>
 
     <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">check</span><span class="p">(</span><span class="n">check_lobotomy</span><span class="p">)(</span><span class="n">bot</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">f</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">wrap</span></div>
-
-
-<div class="viewcode-block" id="cog_command"><a class="viewcode-back" href="../../index.html#ncfacbot.common.cog_command">[docs]</a><span class="k">def</span> <span class="nf">cog_command</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="s2">&quot;Decorator to add default checks to Cog commands.&quot;</span>
-
-    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">check</span><span class="p">(</span><span class="n">check_lobotomy</span><span class="p">)(</span><span class="n">command</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">check</span><span class="p">(</span><span class="n">check_lobotomy</span><span class="p">)(</span><span class="n">command_</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">f</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">wrap</span></div>
 
