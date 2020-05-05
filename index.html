@@ -190,7 +190,10 @@ will be used; otherwise, their plain username will be returned.</p>
 </div>
 <div class="section" id="module-ncfacbot.settings">
 <span id="settings"></span><h2>Settings<a class="headerlink" href="#module-ncfacbot.settings" title="Permalink to this headline">¶</a></h2>
-<p>Setting module</p>
+<p>Settings module; interfaced with via <code class="xref py py-mod docutils literal notranslate"><span class="pre">ncfacbot.extensions.settings</span></code></p>
+<p>This provides a method by which extension authors can register and use settings
+in their code, and end users can manipulate those settings via bot commands
+(in the aforementioned <cite>settings</cite> extension).</p>
 <dl class="py class">
 <dt id="ncfacbot.settings.Setting">
 <em class="property">class </em><code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">Setting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">validate</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#Setting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.Setting" title="Permalink to this definition">¶</a></dt>
