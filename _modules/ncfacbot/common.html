@@ -167,7 +167,32 @@
 
 
 <div class="viewcode-block" id="startup"><a class="viewcode-back" href="../../index.html#ncfacbot.common.startup">[docs]</a><span class="k">def</span> <span class="nf">startup</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="s2">&quot;Decorator to add function to list of handlers to run for on_ready&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator to add function to list of handlers to run for the ``on_ready``</span>
+<span class="sd">    event. The first argument of the function (not counting ``self`` if the</span>
+<span class="sd">    function is a method) will be provided with a reference to the bot. To</span>
+<span class="sd">    decorate a method, assign the handler during ``__init__``.</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        from discord.ext.commands import Cog</span>
+<span class="sd">        from ncfacbot.common import startup</span>
+
+<span class="sd">        class SomeClass(Cog):</span>
+<span class="sd">            def __init__(self, bot):</span>
+<span class="sd">                self.bot = bot</span>
+<span class="sd">                self.on_ready = startup(self.on_ready)</span>
+
+<span class="sd">            def on_ready(self, _):</span>
+<span class="sd">                # don&#39;t care about the bot parameter here, but still have to</span>
+<span class="sd">                # include it to avoid exceptions</span>
+<span class="sd">                pass</span>
+
+<span class="sd">        @startup</span>
+<span class="sd">        def on_ready(bot):</span>
+<span class="sd">            # since we&#39;re not a Cog, we need the bot reference to do stuff</span>
+<span class="sd">            pass</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">global</span> <span class="n">startup_handlers</span>
 
