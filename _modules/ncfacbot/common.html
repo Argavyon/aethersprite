@@ -38,6 +38,7 @@
 <span></span><span class="s2">&quot;Common functions module&quot;</span>
 
 <span class="c1"># stdlib</span>
+<span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">get_event_loop</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
@@ -93,26 +94,15 @@
     <span class="k">return</span> <span class="n">wrap</span></div>
 
 
-<div class="viewcode-block" id="channel_only"><a class="viewcode-back" href="../../index.html#ncfacbot.common.channel_only">[docs]</a><span class="k">def</span> <span class="nf">channel_only</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="s2">&quot;Decorator for bot commands that should only operate in a channel&quot;</span>
+<div class="viewcode-block" id="channel_only"><a class="viewcode-back" href="../../index.html#ncfacbot.common.channel_only">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">channel_only</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="s2">&quot;Check for bot commands that should only operate in a channel&quot;</span>
 
-    <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">ctx</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="ow">is</span> <span class="n">DMChannel</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;This command must be used in a channel.&#39;</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Context</span><span class="p">:</span>
-                <span class="n">ctx</span> <span class="o">=</span> <span class="n">a</span>
-                <span class="k">break</span>
+        <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="ow">is</span> <span class="n">DMChannel</span><span class="p">:</span>
-            <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;This command must be used in a channel.&#39;</span><span class="p">)</span>
-
-            <span class="k">return</span>
-
-        <span class="k">return</span> <span class="k">await</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">wrap</span></div>
+    <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="get_timespan_chunks"><a class="viewcode-back" href="../../index.html#ncfacbot.common.get_timespan_chunks">[docs]</a><span class="k">def</span> <span class="nf">get_timespan_chunks</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>

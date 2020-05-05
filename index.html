@@ -119,8 +119,8 @@
 
 <dl class="py function">
 <dt id="ncfacbot.common.channel_only">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">channel_only</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#channel_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.channel_only" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorator for bot commands that should only operate in a channel</p>
+<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">channel_only</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#channel_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.channel_only" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for bot commands that should only operate in a channel</p>
 </dd></dl>
 
 <dl class="py function">
@@ -300,13 +300,13 @@ will be used; otherwise, their plain username will be returned.</p>
 
 <dl class="py function">
 <dt id="ncfacbot.settings.require_admin">
-<code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">require_admin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">callable</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#require_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.require_admin" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">require_admin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#require_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.require_admin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator for requiring admin/mod privileges to execute a command.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ncfacbot.settings.require_roles">
-<code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.require_roles" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.require_roles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator for requiring particular roles (loaded from the given setting) to
 execute a command. For more than one setting (if <code class="docutils literal notranslate"><span class="pre">setting</span></code> is a
 list/tuple), the aggregate list will be used. Membership in at least one of
