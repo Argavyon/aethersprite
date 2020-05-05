@@ -9,8 +9,9 @@ from discord.ext import commands
 from sqlitedict import SqliteDict
 # local
 from .. import log
-from ..common import channel_only, command, normalize_username, THUMBS_DOWN
-from ..settings import register, require_roles
+from ..common import (channel_only, command, normalize_username,
+                      require_roles, THUMBS_DOWN,)
+from ..settings import register, settings
 
 #: Hard-coded list of components keyed by lowercase item name for lookup
 COMPONENTS = {
@@ -306,3 +307,10 @@ def setup(bot):
              'If set to the default, there are no restrictions. Separate '
              'multiple entries with commas.')
     bot.add_cog(Shop(bot))
+
+
+def teardown(bot):
+    global settings
+
+    for k in ('shop.setroles', 'shop.listroles'):
+        del settings[k]
