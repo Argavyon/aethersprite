@@ -1,7 +1,7 @@
 from os import path
 import sys
 
-sys.path.insert(0, '..')
+sys.path.append('..')
 
 project = 'ncfacbot'
 copyright = '2020, haliphax'
