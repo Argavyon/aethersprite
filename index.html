@@ -75,6 +75,18 @@
 <dd><p>15 minutes in seconds</p>
 </dd></dl>
 
+<dl class="py class">
+<dt id="ncfacbot.common.FakeContext">
+<em class="property">class </em><code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">FakeContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">guild</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ncfacbot.common.FakeContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fake a context for use in certain functions that expect one</p>
+<dl class="py method">
+<dt id="ncfacbot.common.FakeContext.guild">
+<em class="property">property </em><code class="sig-name descname">guild</code><a class="headerlink" href="#ncfacbot.common.FakeContext.guild" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py data">
 <dt id="ncfacbot.common.HOUR">
 <code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">HOUR</code><em class="property"> = 3600</em><a class="headerlink" href="#ncfacbot.common.HOUR" title="Permalink to this definition">¶</a></dt>
@@ -85,6 +97,12 @@
 <dt id="ncfacbot.common.MINUTE">
 <code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">MINUTE</code><em class="property"> = 60</em><a class="headerlink" href="#ncfacbot.common.MINUTE" title="Permalink to this definition">¶</a></dt>
 <dd><p>One minute in seconds</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="ncfacbot.common.POLICE_OFFICER">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">POLICE_OFFICER</code><em class="property"> = '👮'</em><a class="headerlink" href="#ncfacbot.common.POLICE_OFFICER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Police officer emoji</p>
 </dd></dl>
 
 <dl class="py data">
@@ -167,6 +185,12 @@ will be used; otherwise, their plain username will be returned.</p>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ncfacbot.common.startup">
+<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">startup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.startup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to add function to list of handlers to run for on_ready</p>
 </dd></dl>
 
 </div>
@@ -264,12 +288,14 @@ will be used; otherwise, their plain username will be returned.</p>
 
 <dl class="py function">
 <dt id="ncfacbot.settings.require_roles">
-<code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">setting</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.require_roles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.require_roles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator for requiring particular roles (loaded from the given setting) to
-execute a command.</p>
+execute a command. For more than one setting (if <code class="docutils literal notranslate"><span class="pre">setting</span></code> is a
+list/tuple), the aggregate list will be used. Membership in at least one of
+the roles pulled from the settings is required to pass the filter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>setting</strong> – The name of the setting to pull the roles from</p>
+<dd class="field-odd"><p><strong>setting</strong> (<em>str</em><em> or </em><em>list</em><em> or </em><em>tuple</em>) – The name of the setting to pull the roles from</p>
 </dd>
 </dl>
 </dd></dl>
