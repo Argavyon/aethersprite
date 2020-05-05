@@ -10,7 +10,7 @@ from discord.ext import commands
 from sqlitedict import SqliteDict
 # local
 from .. import bot, log
-from ..common import (channel_only, DATETIME_FORMAT, FakeContext,
+from ..common import (cog_command, channel_only, DATETIME_FORMAT, FakeContext,
                       normalize_username, seconds_to_str, startup, THUMBS_DOWN)
 from ..settings import register, require_roles, settings
 
@@ -80,7 +80,7 @@ def _reset(guild):
         del _schedules[guild]
 
 
-async def _go(raid, ctx):
+async def _go(raid, ctx, silent=False):
     "Helper method for scheduling announcement callback"
 
     global _handles
@@ -152,6 +152,10 @@ async def _go(raid, ctx):
         log.info(f'Scheduled announcement for {raid.target}')
 
     _handles[ctx.guild.id] = handle
+
+    if silent:
+        return
+
     await c.send(f':white_check_mark: Raid on {raid.target} scheduled '
                  f'for {raid.schedule.strftime(DATETIME_FORMAT)}!')
     log.info(f'{raid.leader} scheduled raid on {raid.target} @ '
@@ -162,13 +166,19 @@ async def _go(raid, ctx):
 async def on_ready():
     "Schedule raid announcements from database on startup"
 
+    global _handles
+
+    if len(_handles):
+        # only have to do this once during initial startup
+        return
+
     for gid, raid in _schedules.items():
         try:
             gid = int(gid)
             ctx = FakeContext([g for g in bot.guilds
                                if g.id == gid][0])
             log.info(raid)
-            await _go(raid, ctx)
+            await _go(raid, ctx, True)
         except IndexError:
             # unknown guild; delete record
             log.error(f'Unknown guild {gid}')
@@ -186,7 +196,7 @@ class Raid(commands.Cog, name='raid'):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='raid.cancel')
+    @cog_command(name='raid.cancel')
     @authz_schedule
     @channel_only
     async def cancel(self, ctx):
@@ -203,7 +213,7 @@ class Raid(commands.Cog, name='raid'):
         await ctx.send(':negative_squared_cross_mark: Raid canceled.')
         log.info(f'{ctx.author} canceled raid')
 
-    @commands.command(name='raid.check')
+    @cog_command(name='raid.check')
     @authz_check
     @channel_only
     async def check(self, ctx):
@@ -221,7 +231,7 @@ class Raid(commands.Cog, name='raid'):
                        f'for {raid.schedule.strftime(DATETIME_FORMAT)} by '
                        f'{raid.leader}. ({until} from now)')
 
-    @commands.command(name='raid.schedule', brief='Set raid schedule')
+    @cog_command(name='raid.schedule', brief='Set raid schedule')
     @authz_schedule
     @channel_only
     async def schedule(self, ctx, *, when):
@@ -261,7 +271,7 @@ class Raid(commands.Cog, name='raid'):
         log.info(f'{ctx.author} set raid schedule: {dt}')
         await _go(raid, ctx)
 
-    @commands.command(name='raid.target')
+    @cog_command(name='raid.target')
     @authz_schedule
     @channel_only
     async def target(self, ctx, *, target):

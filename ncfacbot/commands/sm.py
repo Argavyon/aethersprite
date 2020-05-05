@@ -10,8 +10,8 @@ import typing
 from sqlitedict import SqliteDict
 # local
 from .. import bot, log
-from ..common import (channel_only, FIFTEEN_MINS, get_next_tick, FakeContext,
-                      normalize_username, startup, THUMBS_DOWN,)
+from ..common import (bot_command, channel_only, FIFTEEN_MINS, get_next_tick,
+                      FakeContext, normalize_username, startup, THUMBS_DOWN,)
 from ..settings import register, settings
 
 #: Maximum allowed timer length
@@ -48,6 +48,8 @@ class SMSchedule(object):
 
 def _done(guild, channel, user, nick):
     "Countdown completed callback"
+
+    global countdowns
 
     loop = aio.get_event_loop()
     FakeContext = namedtuple('FakeContext', ('guild',))
@@ -114,6 +116,10 @@ async def on_ready():
 
     global countdowns
 
+    if len(countdowns):
+        # only have to do this once during initial connect
+        return
+
     now = datetime.now(timezone.utc)
     loop = aio.get_event_loop()
 
@@ -136,7 +142,7 @@ async def on_ready():
                 countdowns[gid] = cd
 
 
-@bot.command(brief='Start a Sorcerers Might countdown', name='sm')
+@bot_command(brief='Start a Sorcerers Might countdown', name='sm')
 @channel_only
 async def sm(ctx, n: typing.Optional[int]=None):
     """
@@ -261,14 +267,15 @@ async def sm(ctx, n: typing.Optional[int]=None):
     sched[author] = SMSchedule(author, nick, ctx.channel.name,
                                sm_end + timedelta(minutes=1))
     schedule[guild] = sched
+
     # set timer for countdown completed callback
     if not guild in countdowns:
         countdowns[guild] = {}
 
     cd = countdowns[guild]
     cd[author] = (sm_end, loop.call_later(60 * (new_count + 1), _done,
-                  guild, ctx.channel.name, author, nick))
-    countdowns[guild]= cd
+                                          guild, ctx.channel.name, author, nick))
+    countdowns[guild] = cd
     await ctx.send(output)
     log.info(f'{ctx.author} started SM countdown for {n} ({new_count}) '
              f'{minutes}')
