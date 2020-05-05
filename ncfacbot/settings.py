@@ -143,8 +143,14 @@ async def require_roles(ctx, setting):
     .. code-block:: python
 
         from functools import partial
-        from ncfacbot.common import require_roles
+        from discord.ext import commands
+        from ncfacbot.common import bot_command, require_roles
         authz = partial(require_roles setting='setting.name')
+
+        @bot_command()
+        @commands.check(authz)
+        async def my_command(ctx):
+            await ctx.send('You are authorized. Congratulations!')
 
     :param setting: The name of the setting to pull the roles from
     :type setting: str or list or tuple
