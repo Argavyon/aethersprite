@@ -191,9 +191,29 @@ will be used; otherwise, their plain username will be returned.</p>
 <div class="section" id="module-ncfacbot.settings">
 <span id="settings"></span><h2>Settings<a class="headerlink" href="#module-ncfacbot.settings" title="Permalink to this headline">¶</a></h2>
 <p>Settings module; interfaced with via <code class="xref py py-mod docutils literal notranslate"><span class="pre">ncfacbot.extensions.settings</span></code></p>
-<p>This provides a method by which extension authors can register and use settings
+<p>This provides methods by which extension authors can register and use settings
 in their code, and end users can manipulate those settings via bot commands
 (in the aforementioned <cite>settings</cite> extension).</p>
+<p>Examples for registering a setting and getting/changing/resetting its value:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ncfacbot.common</span> <span class="kn">import</span> <span class="n">command</span>
+<span class="kn">from</span> <span class="nn">ncfacbot.settings</span> <span class="kn">import</span> <span class="n">register</span><span class="p">,</span> <span class="n">settings</span>
+
+<span class="n">register</span><span class="p">(</span><span class="s1">&#39;my.setting&#39;</span><span class="p">,</span> <span class="s1">&#39;default value&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+         <span class="s1">&#39;There are many settings like it, but this one is mine.&#39;</span><span class="p">)</span>
+
+<span class="nd">@command</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;my.setting&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ctx</span><span class="p">))</span>
+
+<span class="nd">@command</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">change</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;my.setting&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="s1">&#39;new value&#39;</span><span class="p">)</span>
+
+<span class="nd">@command</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;my.setting&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt id="ncfacbot.settings.Setting">
 <em class="property">class </em><code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">Setting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">validate</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#Setting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.Setting" title="Permalink to this definition">¶</a></dt>
@@ -341,7 +361,8 @@ or per-channel basis by administrators and moderators.</p>
 <dl class="py function">
 <dt id="ncfacbot.lobotomy.check_lobotomy">
 <em class="property">async </em><code class="sig-prename descclassname">ncfacbot.lobotomy.</code><code class="sig-name descname">check_lobotomy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/lobotomy.html#check_lobotomy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.lobotomy.check_lobotomy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that command has not been lobotomized before allowing execution.</p>
+<dd><p>Check that command has not been lobotomized before allowing execution. This
+check is wired up automatically by <a class="reference internal" href="#ncfacbot.common.command" title="ncfacbot.common.command"><code class="xref py py-func docutils literal notranslate"><span class="pre">ncfacbot.common.command()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py data">

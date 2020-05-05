@@ -38,9 +38,31 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Settings module; interfaced with via :mod:`ncfacbot.extensions.settings`</span>
 
-<span class="sd">This provides a method by which extension authors can register and use settings</span>
+<span class="sd">This provides methods by which extension authors can register and use settings</span>
 <span class="sd">in their code, and end users can manipulate those settings via bot commands</span>
 <span class="sd">(in the aforementioned `settings` extension).</span>
+
+<span class="sd">Examples for registering a setting and getting/changing/resetting its value:</span>
+
+<span class="sd">.. code:: python</span>
+
+<span class="sd">    from ncfacbot.common import command</span>
+<span class="sd">    from ncfacbot.settings import register, settings</span>
+
+<span class="sd">    register(&#39;my.setting&#39;, &#39;default value&#39;, False, lambda x: True,</span>
+<span class="sd">             &#39;There are many settings like it, but this one is mine.&#39;)</span>
+
+<span class="sd">    @command()</span>
+<span class="sd">    async def check(ctx):</span>
+<span class="sd">        await ctx.send(settings[&#39;my.setting&#39;].get(ctx))</span>
+
+<span class="sd">    @command()</span>
+<span class="sd">    async def change(ctx):</span>
+<span class="sd">        settings[&#39;my.setting&#39;].set(ctx, &#39;new value&#39;)</span>
+
+<span class="sd">    @command()</span>
+<span class="sd">    async def reset(ctx):</span>
+<span class="sd">        settings[&#39;my.setting&#39;].set(ctx, None)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># stdlib</span>

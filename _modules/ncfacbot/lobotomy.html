@@ -54,7 +54,10 @@
 
 
 <div class="viewcode-block" id="check_lobotomy"><a class="viewcode-back" href="../../index.html#ncfacbot.lobotomy.check_lobotomy">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">check_lobotomy</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
-    <span class="s2">&quot;Check that command has not been lobotomized before allowing execution.&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that command has not been lobotomized before allowing execution. This</span>
+<span class="sd">    check is wired up automatically by :func:`ncfacbot.common.command`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="ow">is</span> <span class="n">DMChannel</span><span class="p">:</span>
         <span class="c1"># can&#39;t lobotomize commands via DM, since we need a guild to check</span>
