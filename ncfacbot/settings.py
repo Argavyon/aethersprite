@@ -118,12 +118,15 @@ def register(name: str, default: str, validator: callable,
     settings[name] = Setting(name, default, validator, channel, description)
 
 
-def require_roles(f: callable, setting: str):
+def require_roles(f: callable, setting):
     """
     Decorator for requiring particular roles (loaded from the given setting) to
-    execute a command.
+    execute a command. For more than one setting (if ``setting`` is a
+    list/tuple), the aggregate list will be used. Membership in at least one of
+    the roles pulled from the settings is required to pass the filter.
 
     :param setting: The name of the setting to pull the roles from
+    :type setting: str or list or tuple
     """
 
     @wraps(f)
@@ -144,16 +147,36 @@ def require_roles(f: callable, setting: str):
             # Superusers get a pass
             pass_ = True
 
-        value = settings[setting].get(ctx)
-        roles = [s.strip().lower() for s in value.split(',')] \
-                if value else tuple()
+        values = None
+        kind = type(setting)
+
+        if kind == str:
+            values = settings[setting].get(ctx)
+        elif kind in (list, tuple):
+            names = []
+
+            for s in setting:
+                val = settings[s].get(ctx)
+
+                if val is not None:
+                    names.append(val)
+
+            values = ','.join(names)
+        else:
+            raise ValueError('setting must be str, list, or tuple')
+
+        if values is None:
+            values = []
+
+        roles = [s.strip().lower() for s in values.split(',')] \
+                if len(values) else tuple()
 
         if len(roles) and len([r for r in ctx.author.roles
                                if r.name.lower() in roles]):
             pass_ = True
 
         if not pass_:
-            await ctx.message.add_reaction(THUMBS_DOWN)
+            await ctx.message.add_reaction(POLICE_OFFICER)
             log.warn(f'{ctx.author} attempted to access unauthorized '
                      f'command {f.__name__}')
 

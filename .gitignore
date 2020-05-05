@@ -1,7 +1,6 @@
 **/*.sqlite3
 **/__pycache__/
 .env
-.env.test
 .buildinfo
 docs/_build/
 objects.inv

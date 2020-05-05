@@ -1,6 +1,8 @@
 "Shopping List commands module"
 
 # stdlib
+from collections import OrderedDict
+from functools import partial
 import typing
 # 3rd party
 from discord.ext import commands
@@ -8,15 +10,14 @@ from sqlitedict import SqliteDict
 # local
 from .. import bot, log
 from ..common import channel_only, normalize_username, THUMBS_DOWN
+from ..settings import register, require_roles
 
 #: Hard-coded list of components keyed by lowercase item name for lookup
 COMPONENTS = {
-    'common': 'Common Component',
-    'unc': 'Uncommon Component',
-    'rare': 'Rare Component',
     'bag of industrial plastic': 'Bag of Industrial Plastic',
     'batch of leather': 'Batch of Leather',
     'batch of mushrooms': 'Batch of Mushrooms',
+    'battery': 'Battery',
     'blood ice': 'Blood Ice',
     'bottle of holy water': 'Bottle of Holy Water',
     'bottle of paradise water': 'Bottle of Paradise Water',
@@ -29,7 +30,9 @@ COMPONENTS = {
     'chunk of onyx': 'Chunk of Onyx',
     'chunk of steel': 'Chunk of Steel',
     'chunk of stygian iron': 'Chunk of Stygian Iron',
+    'common': 'Common Component',
     'femur': 'Femur',
+    'fuel can': 'Fuel Can',
     'gold ingot': 'Gold Ingot',
     'handful of grave dirt': 'Handful of Grave Dirt',
     'humerus': 'Humerus',
@@ -40,14 +43,36 @@ COMPONENTS = {
     'patch of moss': 'Patch of Moss',
     'piece of stygian coal': 'Piece of Stygian Coal',
     'piece of wood': 'Piece of Wood',
+    'pistol clip': 'Pistol Clip',
+    'quiver of arrows': 'Quiver of Arrows',
+    'rare': 'Rare Component',
+    'rifle magazine': 'Rifle Magazine',
+    'rock': 'Rock',
     'rose': 'Rose',
+    'shotgun shell': 'Shotgun Shell',
     'silver ingot': 'Silver Ingot',
     'skull': 'Skull',
     'small bottle of gunpowder': 'Small Bottle of Gunpowder',
+    'smg magazine': 'SMG Magazine',
     'soul ice': 'Soul Ice',
     'spool of copper wire': 'Spool of Copper Wire',
     'sprig of nightshade': 'Sprig of Nightshade',
+    'uncom': 'Uncommon Component',
 }
+
+# settings
+register('shop.listroles', None, lambda x: True, False,
+         'The set of roles that are allowed to view shopping lists. '
+         'If set to the default, there are no restrictions. Separate multiple '
+         'entries with commas.')
+register('shop.setroles', None, lambda x: True, False,
+         'The set of roles that are allowed to maintain shopping lists. '
+         'If set to the default, there are no restrictions. Separate multiple '
+         'entries with commas.')
+# authz decorators
+authz_list = partial(require_roles,
+                     setting=('shop.setroles', 'shop.listroles'))
+authz_set = partial(require_roles, setting='shop.setroles')
 
 
 class ShoppingList(object):
@@ -55,9 +80,9 @@ class ShoppingList(object):
     "Shopping list; stores user's information and item requests"
 
     def __init__(self, nick, userid):
-        #: User's nickname (default's to username)
+        #: User's nickname (defaults to username)
         self.nick = nick
-        # : User's full id (username#1234)
+        #: User's full id (username#1234)
         self.userid = userid
         #: List of item requests
         self.items = {}
@@ -68,7 +93,7 @@ class Shop(commands.Cog, name='shop'):
     """
     Shopping commands
 
-    Used to maintain a personal shopping list of crafting/alchemy ingredients
+    Used to maintain a personal shopping list of crafting/alchemy/ammo ingredients
     """
 
     # Persistent storage of shopping lists
@@ -79,6 +104,7 @@ class Shop(commands.Cog, name='shop'):
         self.bot = bot
 
     @commands.command(name='shop.set', brief='Manipulate your shopping list')
+    @authz_set
     @channel_only
     async def set(self, ctx, num, *, item):
         """
@@ -86,12 +112,12 @@ class Shop(commands.Cog, name='shop'):
 
         Set your request for [item] to [num], where [num] can be relative. Substring matching is used for [item], so mention any part of its name. If more than one match is returned, you will have to be more specific. At any time if the number of a given item reaches (or dips below) 0, it will be removed from the list.
 
-        The following special item types have been added to the list: Common Components (common), Uncommon Components (unc), and Rare Components (rare).
+        The following special item types have been added to the list: Common Components (common), Uncommon Components (uncom), and Rare Components (rare).
 
         Examples:
-            !shop.set 5 onyx      (ask for 5 Chunk of Stygian Onyx)
+            !shop.set 5 fuel      (ask for 5 Fuel Can)
             !shop.set -1 leather  (ask for 1 less Batch of Leather)
-            !shop.set +3 unc      (ask for 3 more Uncommon Component)
+            !shop.set +3 uncom    (ask for 3 more Uncommon Component)
             !shop.set 0 chain     (clear request for Length of Chain)
         """
 
@@ -178,6 +204,7 @@ class Shop(commands.Cog, name='shop'):
                 self._lists[ctx.guild.id] = lists
 
     @commands.command(name='shop.list', brief='Show shopping list(s)')
+    @authz_list
     @channel_only
     async def list(self, ctx, who: typing.Optional[str]):
         """
@@ -235,6 +262,7 @@ class Shop(commands.Cog, name='shop'):
 
             return
 
+        items = OrderedDict(sorted(items.items()))
         longest = max([len(k) for k in items.keys()])
         first = True
         output = '```'
@@ -251,6 +279,7 @@ class Shop(commands.Cog, name='shop'):
         await ctx.send(output)
 
     @commands.command(name='shop.clear')
+    @authz_set
     @channel_only
     async def clear(self, ctx):
         "Empty your shopping list"

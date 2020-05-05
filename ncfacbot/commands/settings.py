@@ -95,7 +95,7 @@ class Settings(commands.Cog, name='settings'):
     @authz
     @channel_only
     async def desc(self, ctx, name):
-        "View description of setting [name]"
+        "View description of setting <name>"
 
         if name not in settings:
             await ctx.send(MSG_NO_SETTING)
@@ -109,7 +109,7 @@ class Settings(commands.Cog, name='settings'):
         if setting.description is None:
             await ctx.send(':person_shrugging: No description set.')
         else:
-            await ctx.send(f':question: `{setting.name}` '
+            await ctx.send(f':book: `{setting.name}` '
                            f'_(Channel: **{str(setting.channel)}**)_\n'
                            f'> {setting.description}')
 
