@@ -330,6 +330,24 @@ the roles pulled from the settings is required to pass the filter.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-ncfacbot.lobotomy">
+<span id="lobotomy"></span><h2>Lobotomy<a class="headerlink" href="#module-ncfacbot.lobotomy" title="Permalink to this headline">¶</a></h2>
+<p>Lobotomy module; interfaced with via <code class="xref py py-mod docutils literal notranslate"><span class="pre">ncfacbot.extensions.lobotomy</span></code></p>
+<p>This feature allows for particular commands to be disabled on a per-server
+or per-channel basis by administrators and moderators.</p>
+<dl class="py function">
+<dt id="ncfacbot.lobotomy.check_lobotomy">
+<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.lobotomy.</code><code class="sig-name descname">check_lobotomy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/lobotomy.html#check_lobotomy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.lobotomy.check_lobotomy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that command has not been lobotomized before allowing execution.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="ncfacbot.lobotomy.lobotomies">
+<code class="sig-prename descclassname">ncfacbot.lobotomy.</code><code class="sig-name descname">lobotomies</code><em class="property"> = SqliteDict(lobotomy.sqlite3)</em><a class="headerlink" href="#ncfacbot.lobotomy.lobotomies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lobotomies database</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -345,6 +363,7 @@ the roles pulled from the settings is required to pass the filter.</p>
 <li><a class="reference internal" href="#module-ncfacbot.common">Common</a></li>
 <li><a class="reference internal" href="#module-ncfacbot.settings">Settings</a></li>
 <li><a class="reference internal" href="#module-ncfacbot.authz">Authorization</a></li>
+<li><a class="reference internal" href="#module-ncfacbot.lobotomy">Lobotomy</a></li>
 </ul>
 </li>
 </ul>

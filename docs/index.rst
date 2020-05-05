@@ -33,3 +33,10 @@ Authorization
 
 .. automodule:: ncfacbot.authz
     :members:
+
+
+Lobotomy
+--------
+
+.. automodule:: ncfacbot.lobotomy
+    :members:
