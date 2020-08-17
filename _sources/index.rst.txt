@@ -13,6 +13,9 @@ Main
 .. automodule:: ncfacbot
     :members:
 
+.. automodule:: ncfacbot.webapp
+    :members:
+
 
 Common
 ------
