@@ -43,10 +43,6 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span><span class="p">,</span> <span class="n">floor</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="c1"># 3rd party</span>
-<span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">check</span><span class="p">,</span> <span class="n">command</span> <span class="k">as</span> <span class="n">command_</span>
-<span class="c1"># local</span>
-<span class="kn">from</span> <span class="nn">.lobotomy</span> <span class="kn">import</span> <span class="n">check_lobotomy</span>
 
 <span class="c1"># constants</span>
 <span class="c1">#: One minute in seconds</span>
@@ -68,21 +64,15 @@
 <span class="c1">#: Fake a context for use in certain functions that expect one</span>
 <span class="n">FakeContext</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;FakeContext&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;guild&#39;</span><span class="p">,))</span>
 
-<span class="c1"># List of functions to run on startup during on_ready</span>
-<span class="n">startup_handlers</span> <span class="o">=</span> <span class="p">[]</span>
 
+<div class="viewcode-block" id="StartupHandlers"><a class="viewcode-back" href="../../index.html#ncfacbot.common.StartupHandlers">[docs]</a><span class="k">class</span> <span class="nc">StartupHandlers</span><span class="p">:</span>
 
-<div class="viewcode-block" id="command"><a class="viewcode-back" href="../../index.html#ncfacbot.common.command">[docs]</a><span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decorator to add default checks to new commands. This is just a thin</span>
-<span class="sd">    wrapper around :func:`discord.ext.commands.command`, and will accept the</span>
-<span class="sd">    same arguments.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;Startup handlers&quot;</span>
 
-    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">check</span><span class="p">(</span><span class="n">check_lobotomy</span><span class="p">)(</span><span class="n">command_</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">f</span><span class="p">))</span>
+    <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">return</span> <span class="n">wrap</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Singleton collection; use .list member instead&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_timespan_chunks"><a class="viewcode-back" href="../../index.html#ncfacbot.common.get_timespan_chunks">[docs]</a><span class="k">def</span> <span class="nf">get_timespan_chunks</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
@@ -149,25 +139,28 @@
 <span class="sd">    :rtype: str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">diff</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-    <span class="n">until</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">seconds</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+    <span class="n">until</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">if</span> <span class="n">diff</span> <span class="o">&gt;=</span> <span class="n">DAY</span><span class="p">:</span>
-        <span class="n">until</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">floor</span><span class="p">(</span><span class="n">diff</span> <span class="o">/</span> <span class="n">DAY</span><span class="p">)</span><span class="si">}</span><span class="s1"> day(s) &#39;</span>
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">diff</span> <span class="o">%</span> <span class="n">DAY</span>
+    <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;=</span> <span class="n">DAY</span><span class="p">:</span>
+        <span class="n">days</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">seconds</span> <span class="o">/</span> <span class="n">DAY</span><span class="p">)</span>
+        <span class="n">until</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">days</span><span class="si">}</span><span class="s1"> day</span><span class="si">{</span><span class="s2">&quot;s&quot;</span> <span class="k">if</span> <span class="n">days</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span> <span class="o">%</span> <span class="n">DAY</span>
 
-    <span class="k">if</span> <span class="n">diff</span> <span class="o">&gt;=</span> <span class="n">HOUR</span><span class="p">:</span>
-        <span class="n">until</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">floor</span><span class="p">(</span><span class="n">diff</span> <span class="o">/</span> <span class="n">HOUR</span><span class="p">)</span><span class="si">}</span><span class="s1"> hour(s) &#39;</span>
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">diff</span> <span class="o">%</span> <span class="n">HOUR</span>
+    <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;=</span> <span class="n">HOUR</span><span class="p">:</span>
+        <span class="n">hours</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">seconds</span> <span class="o">/</span> <span class="n">HOUR</span><span class="p">)</span>
+        <span class="n">until</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">hours</span><span class="si">}</span><span class="s1"> hour</span><span class="si">{</span><span class="s2">&quot;s&quot;</span> <span class="k">if</span> <span class="n">hours</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span> <span class="o">%</span> <span class="n">HOUR</span>
 
-    <span class="k">if</span> <span class="n">diff</span> <span class="o">&gt;=</span> <span class="n">MINUTE</span><span class="p">:</span>
-        <span class="n">until</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">floor</span><span class="p">(</span><span class="n">diff</span> <span class="o">/</span> <span class="n">MINUTE</span><span class="p">)</span><span class="si">}</span><span class="s1"> minute(s) &#39;</span>
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">diff</span> <span class="o">%</span> <span class="n">MINUTE</span>
+    <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;=</span> <span class="n">MINUTE</span><span class="p">:</span>
+        <span class="n">minutes</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">seconds</span> <span class="o">/</span> <span class="n">MINUTE</span><span class="p">)</span>
+        <span class="n">until</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">minutes</span><span class="si">}</span><span class="s1"> minute</span><span class="si">{</span><span class="s2">&quot;s&quot;</span> <span class="k">if</span> <span class="n">minutes</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span> <span class="o">%</span> <span class="n">MINUTE</span>
 
-    <span class="k">if</span> <span class="n">diff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">until</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">diff</span><span class="si">}</span><span class="s1"> second(s) &#39;</span>
+    <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">until</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s1"> second</span><span class="si">{</span><span class="s2">&quot;s&quot;</span> <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">until</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">until</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="startup"><a class="viewcode-back" href="../../index.html#ncfacbot.common.startup">[docs]</a><span class="k">def</span> <span class="nf">startup</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
@@ -198,10 +191,8 @@
 <span class="sd">            pass</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">global</span> <span class="n">startup_handlers</span>
-
-    <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">startup_handlers</span><span class="p">:</span>
-        <span class="n">startup_handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">StartupHandlers</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+        <span class="n">StartupHandlers</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">f</span></div>
 </pre></div>

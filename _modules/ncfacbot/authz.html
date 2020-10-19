@@ -49,7 +49,7 @@
 <div class="viewcode-block" id="channel_only"><a class="viewcode-back" href="../../index.html#ncfacbot.authz.channel_only">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">channel_only</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="s2">&quot;Check for bot commands that should only operate in a channel&quot;</span>
 
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="ow">is</span> <span class="n">DMChannel</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">DMChannel</span><span class="p">):</span>
         <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;This command must be used in a channel.&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">False</span>
@@ -81,14 +81,13 @@
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        from functools import partial</span>
-<span class="sd">        from discord.ext import commands</span>
+<span class="sd">        from discord.ext.commands import check, command</span>
 <span class="sd">        from ncfacbot.authz import require_roles</span>
-<span class="sd">        from ncfacbot.common import command</span>
 
 <span class="sd">        authz = partial(require_roles, setting=&#39;setting.name&#39;)</span>
 
 <span class="sd">        @command()</span>
-<span class="sd">        @commands.check(authz)</span>
+<span class="sd">        @check(authz)</span>
 <span class="sd">        async def my_command(ctx):</span>
 <span class="sd">            await ctx.send(&#39;You are authorized. Congratulations!&#39;)</span>
 
@@ -102,19 +101,17 @@
     <span class="kn">from</span> <span class="nn">.settings</span> <span class="kn">import</span> <span class="n">settings</span>
 
     <span class="n">perms</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">permissions_in</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
-    <span class="n">pass_</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">if</span> <span class="n">perms</span><span class="o">.</span><span class="n">administrator</span> <span class="ow">or</span> <span class="n">perms</span><span class="o">.</span><span class="n">manage_channels</span> <span class="ow">or</span> <span class="n">perms</span><span class="o">.</span><span class="n">manage_guild</span> \
             <span class="ow">or</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;NCFACBOT_OWNER&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="p">):</span>
         <span class="c1"># Superusers get a pass</span>
-        <span class="n">pass_</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
     <span class="n">values</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">kind</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">setting</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="n">setting</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">setting</span><span class="p">:</span>
@@ -134,18 +131,15 @@
     <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span> \
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">roles</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">roles</span>
-                           <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">]):</span>
-        <span class="n">pass_</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">roles</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">roles</span>
+                               <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">pass_</span><span class="p">:</span>
-        <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="n">POLICE_OFFICER</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> attempted to access unauthorized &#39;</span>
-                 <span class="sa">f</span><span class="s1">&#39;command </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="n">POLICE_OFFICER</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s1"> attempted to access unauthorized command &#39;</span>
+             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="k">return</span> <span class="kc">True</span></div>
+    <span class="k">return</span> <span class="kc">False</span></div>
 </pre></div>
 
           </div>

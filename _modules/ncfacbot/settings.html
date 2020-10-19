@@ -46,7 +46,7 @@
 
 <span class="sd">.. code:: python</span>
 
-<span class="sd">    from ncfacbot.common import command</span>
+<span class="sd">    from discord.ext.commands import command</span>
 <span class="sd">    from ncfacbot.settings import register, settings</span>
 
 <span class="sd">    register(&#39;my.setting&#39;, &#39;default value&#39;, False, lambda x: True,</span>
@@ -110,10 +110,11 @@
 <span class="sd">        :rtype: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">key</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">guild</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">guild</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span> <span class="k">else</span> <span class="n">ctx</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">guild</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+                  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">guild</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">ctx</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">:</span>
-            <span class="n">key</span> <span class="o">+=</span> <span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">key</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;#</span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&#39;</span>
 
         <span class="k">return</span> <span class="n">key</span>
 

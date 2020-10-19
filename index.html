@@ -106,18 +106,16 @@
 <dd><p>Police officer emoji</p>
 </dd></dl>
 
+<dl class="py class">
+<dt id="ncfacbot.common.StartupHandlers">
+<em class="property">class </em><code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">StartupHandlers</code><a class="reference internal" href="_modules/ncfacbot/common.html#StartupHandlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.StartupHandlers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Startup handlers</p>
+</dd></dl>
+
 <dl class="py data">
 <dt id="ncfacbot.common.THUMBS_DOWN">
 <code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">THUMBS_DOWN</code><em class="property"> = '👎'</em><a class="headerlink" href="#ncfacbot.common.THUMBS_DOWN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thumbs down emoji</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ncfacbot.common.command">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">command</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.command" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorator to add default checks to new commands. This is just a thin
-wrapper around <code class="xref py py-func docutils literal notranslate"><span class="pre">discord.ext.commands.command()</span></code>, and will accept the
-same arguments.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -226,7 +224,7 @@ decorate a method, assign the handler during <code class="docutils literal notra
 in their code, and end users can manipulate those settings via bot commands
 (in the aforementioned <cite>settings</cite> extension).</p>
 <p>Examples for registering a setting and getting/changing/resetting its value:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ncfacbot.common</span> <span class="kn">import</span> <span class="n">command</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">command</span>
 <span class="kn">from</span> <span class="nn">ncfacbot.settings</span> <span class="kn">import</span> <span class="n">register</span><span class="p">,</span> <span class="n">settings</span>
 
 <span class="n">register</span><span class="p">(</span><span class="s1">&#39;my.setting&#39;</span><span class="p">,</span> <span class="s1">&#39;default value&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
@@ -365,14 +363,13 @@ list/tuple), the aggregate list will be used. Membership in at least one of
 the roles pulled from the settings is required to pass the filter.</p>
 <p>Example, if your setting with role(s) is <code class="docutils literal notranslate"><span class="pre">setting.name</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">discord.ext</span> <span class="kn">import</span> <span class="n">commands</span>
+<span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">check</span><span class="p">,</span> <span class="n">command</span>
 <span class="kn">from</span> <span class="nn">ncfacbot.authz</span> <span class="kn">import</span> <span class="n">require_roles</span>
-<span class="kn">from</span> <span class="nn">ncfacbot.common</span> <span class="kn">import</span> <span class="n">command</span>
 
 <span class="n">authz</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">require_roles</span><span class="p">,</span> <span class="n">setting</span><span class="o">=</span><span class="s1">&#39;setting.name&#39;</span><span class="p">)</span>
 
 <span class="nd">@command</span><span class="p">()</span>
-<span class="nd">@commands</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">authz</span><span class="p">)</span>
+<span class="nd">@check</span><span class="p">(</span><span class="n">authz</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">my_command</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;You are authorized. Congratulations!&#39;</span><span class="p">)</span>
 
@@ -384,25 +381,6 @@ the roles pulled from the settings is required to pass the filter.</p>
 <dd class="field-odd"><p><strong>setting</strong> (<em>str</em><em> or </em><em>list</em><em> or </em><em>tuple</em>) – The name of the setting to pull the roles from</p>
 </dd>
 </dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-ncfacbot.lobotomy">
-<span id="lobotomy"></span><h2>Lobotomy<a class="headerlink" href="#module-ncfacbot.lobotomy" title="Permalink to this headline">¶</a></h2>
-<p>Lobotomy module; interfaced with via <code class="xref py py-mod docutils literal notranslate"><span class="pre">ncfacbot.extensions.lobotomy</span></code></p>
-<p>This feature allows for particular commands to be disabled on a per-server
-or per-channel basis by administrators and moderators.</p>
-<dl class="py function">
-<dt id="ncfacbot.lobotomy.check_lobotomy">
-<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.lobotomy.</code><code class="sig-name descname">check_lobotomy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/lobotomy.html#check_lobotomy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.lobotomy.check_lobotomy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that command has not been lobotomized before allowing execution. This
-check is wired up automatically by <a class="reference internal" href="#ncfacbot.common.command" title="ncfacbot.common.command"><code class="xref py py-func docutils literal notranslate"><span class="pre">ncfacbot.common.command()</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt id="ncfacbot.lobotomy.lobotomies">
-<code class="sig-prename descclassname">ncfacbot.lobotomy.</code><code class="sig-name descname">lobotomies</code><em class="property"> = SqliteDict(lobotomy.sqlite3)</em><a class="headerlink" href="#ncfacbot.lobotomy.lobotomies" title="Permalink to this definition">¶</a></dt>
-<dd><p>Lobotomies database</p>
 </dd></dl>
 
 </div>
@@ -421,7 +399,6 @@ check is wired up automatically by <a class="reference internal" href="#ncfacbot
 <li><a class="reference internal" href="#module-ncfacbot.common">Common</a></li>
 <li><a class="reference internal" href="#module-ncfacbot.settings">Settings</a></li>
 <li><a class="reference internal" href="#module-ncfacbot.authz">Authorization</a></li>
-<li><a class="reference internal" href="#module-ncfacbot.lobotomy">Lobotomy</a></li>
 </ul>
 </li>
 </ul>
