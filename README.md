@@ -39,13 +39,25 @@ _This bot is a work in progress. Please excuse my mess..._
   A collection of commands for viewing and maintaining crafting/alchemy/ammo
   shopping lists
 - `sm`
-  Announce the end of Sorcerers Might, accounting for the countdown tick bug
+  Announce the end of Sorcerers Might
 - `tick`
-  GMT timestamp and timespan (e.g. _"8 hour(s), 4 minute(s)"_) of the next tick
-  (or _x_ ticks from now)
+  GMT timestamp and timespan (e.g. _"1 day, 8 hours, 4 minutes"_) of the next
+  tick (or _x_ ticks from now)
+
+## Stand-alone settings
+
+Some of the settings in the project do not have corresponding commands, and
+operate based entirely on events.
+
+- `nameonly` _(server)_
+  If set to anything other than the default value, the bot will only respond
+  if it is mentioned directly
+- `nameonly.channel` _(channel)_
+  Like `nameonly`, but this setting applies to individual channels
 
 ## Plans
 
+- Ability to set guild for using guild-locked commands via DM
 - Set command prefix per-server and per-channel
 - Split bot framework into separate project, leave NC commands here
 - [TOML] configuration file(s) for immutable settings

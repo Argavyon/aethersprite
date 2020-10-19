@@ -9,7 +9,7 @@ Examples for registering a setting and getting/changing/resetting its value:
 
 .. code:: python
 
-    from ncfacbot.common import command
+    from discord.ext.commands import command
     from ncfacbot.settings import register, settings
 
     register('my.setting', 'default value', False, lambda x: True,
@@ -73,10 +73,11 @@ class Setting(object):
         :rtype: str
         """
 
-        key = ctx.guild['id'] if type(ctx.guild) is dict else ctx.guild.id
+        key = str(ctx.guild['id']
+                  if isinstance(ctx.guild, dict) else ctx.guild.id)
 
         if self.channel:
-            key += '#' + ctx.channel.id
+            key += f'#{ctx.channel.id}'
 
         return key
 

@@ -3,17 +3,15 @@
 # stdlib
 import asyncio as aio
 from datetime import datetime, timezone, timedelta
-from math import ceil, floor
-from time import time
+from math import ceil
 import typing
 # 3rd party
-from discord.ext import commands
+from discord.ext.commands import check, command
 from sqlitedict import SqliteDict
 # local
 from .. import log
-from ..authz import channel_only, require_roles
-from ..common import (command, FIFTEEN_MINS, get_next_tick, FakeContext,
-                      normalize_username, startup, THUMBS_DOWN,)
+from ..authz import channel_only
+from ..common import FakeContext, normalize_username, startup, THUMBS_DOWN
 from ..settings import register, settings
 
 #: Maximum allowed timer length
@@ -21,42 +19,6 @@ SM_LIMIT = 100
 
 #: Countdown schedule persisted to database file
 schedule = SqliteDict('sm.sqlite3', tablename='announce', autocommit=True)
-
-
-class Countdowns(object):
-    "Convenience class for managing a singleton dict of callback handlers"
-
-    cd = {}
-
-    @staticmethod
-    def update(gid, key, value):
-        if gid not in Countdowns.cd:
-            Countdowns.cd[gid] = {}
-
-        cd = Countdowns.cd[gid]
-        cd.update({key: value})
-        Countdowns.cd[gid] = cd
-
-    @staticmethod
-    def delete(gid, key):
-        cd = Countdowns.cd[gid]
-        del cd[key]
-        Countdowns.cd[gid] = cd
-
-    @staticmethod
-    def get(gid, key):
-        try:
-            return Countdowns.cd[gid][key]
-        except KeyError:
-            return None
-
-    @staticmethod
-    def any():
-        return len(Countdowns.cd) > 0
-
-    @staticmethod
-    def has(gid):
-        return gid in Countdowns.cd
 
 
 class SMSchedule(object):
@@ -92,7 +54,6 @@ def _done(bot, guild, channel, user, nick):
         # guild isn't registered with this bot; remove it
         log.warn(f'Removing missing guild {guild}')
         del schedule[guild]
-        Countdowns.delete(guild, user)
 
         return
 
@@ -134,7 +95,9 @@ def _done(bot, guild, channel, user, nick):
             del s[user]
             schedule[guild] = s
 
-        Countdowns.delete(guild, user)
+        cd = bot.sm_alerts[guild]
+        del cd[user]
+        bot.sm_alerts[guild] = cd
 
 
 @startup
@@ -145,18 +108,13 @@ async def ready(bot):
         return
 
     setattr(bot, '__sm_ready__', None)
-
-    if Countdowns.any():
-        # only have to do this once during initial connect
-        return
+    # Use bot property to store alerts; easy way to ensure it is atomic
+    setattr(bot, 'sm_alerts', {})
 
     now = datetime.now(timezone.utc)
     loop = aio.get_event_loop()
 
     for gid, guild in schedule.items():
-        if Countdowns.has(gid):
-            continue
-
         for _, sched in guild.items():
             if sched.schedule <= now:
                 log.info(f'Immediately calling SM expiry for {sched.user}')
@@ -167,14 +125,16 @@ async def ready(bot):
                 h = loop.call_later(diff, _done, bot, gid, sched.channel,
                                     sched.user, sched.nick)
 
-                if not gid in Countdowns.cd:
-                    Countdowns.cd[gid] = {}
+                if not gid in bot.sm_alerts:
+                    bot.sm_alerts[gid] = {}
 
-                Countdowns.update(gid, sched.user, (sched.schedule, h))
+                gcd = bot.sm_alerts[gid]
+                gcd[sched.user] = (sched.schedule, h)
+                bot.sm_alerts[gid] = gcd
 
 
 @command(brief='Start a Sorcerers Might countdown', name='sm')
-@commands.check(channel_only)
+@check(channel_only)
 async def sm(ctx, n: typing.Optional[int]=None):
     """
     Start a Sorcerers Might countdown for n minutes
@@ -182,8 +142,6 @@ async def sm(ctx, n: typing.Optional[int]=None):
     You may also use a value of 0 to cancel the countdown. If no value is provided, the remaining time of the countdown will be shown.
 
     Values of n up to 55 are allowed.
-
-    * Takes into account the current bug in Sorcerers Might where 5 minutes are deducted erroneously with each game tick.
     """
 
     author = str(ctx.author)
@@ -194,14 +152,14 @@ async def sm(ctx, n: typing.Optional[int]=None):
 
     if n is None:
         # report countdown status
-        if guild not in Countdowns.cd \
-                or author not in Countdowns.cd[guild]:
+        if not guild in ctx.bot.sm_alerts \
+                or author not in ctx.bot.sm_alerts[guild]:
             await ctx.send(':person_shrugging: '
                            'You do not currently have a countdown.')
 
             return
 
-        cd = SMData.countdowns.get(guild, author)
+        cd = ctx.bot.sm_alerts[guild][author]
 
         # get remaining time
         remaining = (cd[0] - now).total_seconds() / 60
@@ -232,13 +190,15 @@ async def sm(ctx, n: typing.Optional[int]=None):
 
         return
 
-    if Countdowns.has(guild):
-        cd = Countdowns.get(guild, author)
+    if guild in ctx.bot.sm_alerts:
+        gcd = ctx.bot.sm_alerts[guild]
 
-        if cd is not None:
+        if author in gcd:
             # cancel callback and remove schedule
+            cd = ctx.bot.sm_alerts[guild][author]
             cd[1].cancel()
-            Countdowns.delete(guild, author)
+            del gcd[author]
+            ctx.bot.sm_alerts[guild] = gcd
 
             try:
                 s = schedule[guild]
@@ -266,26 +226,6 @@ async def sm(ctx, n: typing.Optional[int]=None):
               f'{minutes}.')
     sm_end = now + timedelta(minutes=n) \
         - timedelta(seconds=now.second, microseconds=now.microsecond)
-    counter = 1
-    next_tick = get_next_tick()
-
-    while next_tick < sm_end:
-        counter += 1
-        diff = floor((sm_end - next_tick).total_seconds() / 60)
-
-        if diff > 5:
-            sm_end -= timedelta(minutes=5)
-        else:
-            sm_end = next_tick
-
-            break
-
-        next_tick = get_next_tick(counter)
-
-    new_count = ceil((sm_end - now).total_seconds() / 60)
-
-    if new_count != n:
-        output += f' (Adjusting to {new_count} due to SM bug.)'
 
     # store countdown reference in database
     if not guild in schedule:
@@ -298,15 +238,16 @@ async def sm(ctx, n: typing.Optional[int]=None):
     schedule[guild] = sched
 
     # set timer for countdown completed callback
-    if not guild in Countdowns.cd:
-        Countdowns.cd[guild] = {}
+    if guild not in ctx.bot.sm_alerts:
+        ctx.bot.sm_alerts[guild] = {}
 
-    Countdowns.update(guild, author,
-                      (sm_end, loop.call_later(60 * (new_count + 1), _done,
-                       ctx.bot, guild, ctx.channel.name, author, nick)))
+    gcd = ctx.bot.sm_alerts[guild]
+    gcd[author] = (sm_end,
+                   loop.call_later(60 * (n + 1), _done, ctx.bot, guild,
+                                   ctx.channel.name, author, nick))
+    ctx.bot.sm_alerts[guild] = gcd
     await ctx.send(output)
-    log.info(f'{ctx.author} started SM countdown for {n} ({new_count}) '
-             f'{minutes}')
+    log.info(f'{ctx.author} started SM countdown for {n} {minutes}')
 
 
 def setup(bot):

@@ -1,19 +1,21 @@
 "Lobotomy cog"
 
 # stdlib
-from os import environ
 import typing
 # 3rd party
-from discord.ext import commands
-from functools import partial
+from discord import DMChannel
+from discord.ext.commands import check, Cog, command
+from sqlitedict import SqliteDict
 # local
 from .. import log
 from ..authz import require_admin
-from ..common import command
-from ..lobotomy import lobotomies
+
+#: Lobotomies database
+lobotomies = SqliteDict('lobotomy.sqlite3', tablename='lobotomies',
+                        autocommit=True)
 
 
-class Lobotomy(commands.Cog, name='lobotomy'):
+class Lobotomy(Cog, name='lobotomy'):
 
     "Lobotomy commands; enable and disable commands per-server and per-channel"
 
@@ -21,7 +23,6 @@ class Lobotomy(commands.Cog, name='lobotomy'):
         self.bot = bot
 
     @command(name='lobotomy.add')
-    @commands.check(require_admin)
     async def add(self, ctx, command, server: typing.Optional[bool] = False):
         """
         Disable the given command
@@ -44,6 +45,8 @@ class Lobotomy(commands.Cog, name='lobotomy'):
 
             return
 
+        # if it's already in the opposite category (channel vs. server),
+        # then clear it out
         if key in lobs and server:
             lobs.remove(key)
         elif server_key in lobs and not server:
@@ -51,10 +54,10 @@ class Lobotomy(commands.Cog, name='lobotomy'):
 
         lobs.add(server_key if server else key)
         lobotomies[guild] = lobs
+        log.info(f'{ctx.author} lobotomized {server_key if server else key}')
         await ctx.send(f':brain: Done.')
 
     @command(name='lobotomy.clear')
-    @commands.check(require_admin)
     async def clear(self, ctx, command, server: typing.Optional[bool] = False):
         """
         Enable the given command
@@ -80,10 +83,10 @@ class Lobotomy(commands.Cog, name='lobotomy'):
 
         lobs.remove(server_key if server else key)
         lobotomies[guild] = lobs
+        log.info(f'{ctx.author} cleared {server_key if server else key}')
         await ctx.send(':wastebasket: Cleared.')
 
     @command(name='lobotomy.list')
-    @commands.check(require_admin)
     async def list(self, ctx, server: typing.Optional[bool] = False):
         """
         List all current channel's lobotomized commands
@@ -92,6 +95,10 @@ class Lobotomy(commands.Cog, name='lobotomy'):
         """
 
         guild = str(ctx.guild.id)
+
+        if guild not in lobotomies:
+            lobotomies[guild] = []
+
         suffix = f'#{ctx.channel.id}'
         suffixlen = len(suffix)
         output = '**, **'.join([(l if server else l[:-suffixlen])
@@ -101,8 +108,43 @@ class Lobotomy(commands.Cog, name='lobotomy'):
         if not len(output):
             output = 'None'
 
+        log.info(f'{ctx.author} viewed {"server" if server else""} lobotomy '
+                 'list')
         await ctx.send(f':medical_symbol: **{output}**')
 
 
+async def check_lobotomy(ctx):
+    "Check that command has not been lobotomized before allowing execution."
+
+    if isinstance(ctx.channel, DMChannel):
+        # can't lobotomize commands via DM, since we need a guild to check
+        # settings values
+        return True
+
+    guild = str(ctx.guild.id)
+
+    if guild not in lobotomies:
+        # none set for this guild; bail
+        return True
+
+    keys = (ctx.command.name, f'{ctx.command.name}#{ctx.channel.id}')
+
+    for k in keys:
+        if k in lobotomies[guild]:
+            log.warn(f'Suppressing lobotomized command from '
+                     f'{ctx.author}: {ctx.command.name} in '
+                     f'#{ctx.channel.name} ({ctx.guild.name})')
+
+            return False
+
+    return True
+
+
 def setup(bot):
-    bot.add_cog(Lobotomy(bot))
+    bot.add_check(check_lobotomy)
+    cog = Lobotomy(bot)
+
+    for c in cog.get_commands():
+        c.add_check(require_admin)
+
+    bot.add_cog(cog)

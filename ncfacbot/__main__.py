@@ -4,7 +4,7 @@ from os import environ
 from random import seed
 from sys import stdout
 # 3rd party
-from discord import Game
+from discord import Activity, ActivityType
 from discord.ext.commands import (Bot, CheckFailure, CommandNotFound,
                                   when_mentioned_or,)
 # local
@@ -18,7 +18,7 @@ log.addHandler(streamHandler)
 log.setLevel(logging.INFO)
 
 #: Activity on login
-activity = Game(name='!help for commands')
+activity = Activity(name='!help for commands', type=ActivityType.listening)
 
 #: The bot itself
 bot = Bot(command_prefix=when_mentioned_or('!'))
@@ -38,7 +38,7 @@ async def on_disconnect():
 async def on_command_error(_, error):
     "Suppress command check failures and invalid commands."
 
-    if type(error) in (CheckFailure, CommandNotFound,):
+    if isinstance(error, (CheckFailure, CommandNotFound)):
         return
 
     raise error
@@ -48,10 +48,12 @@ async def on_command_error(_, error):
 async def on_ready():
     "Update presence and fire up registered startup handlers."
 
+    from .common import StartupHandlers
+
     log.info(f'Logged in as {bot.user}')
     await bot.change_presence(activity=activity)
 
-    for f in startup_handlers:
+    for f in StartupHandlers.list:
         await f(bot)
 
 
@@ -74,8 +76,6 @@ def entrypoint():
     bot.load_extension('ncfacbot.extensions._all')
     # here we go!
     bot.run(environ['DISCORD_TOKEN'])
-
-from .common import startup_handlers
 
 if __name__ == '__main__':
     entrypoint()

@@ -6,10 +6,6 @@ from collections import namedtuple
 from datetime import datetime, timezone
 from math import ceil, floor
 import re
-# 3rd party
-from discord.ext.commands import check, command as command_
-# local
-from .lobotomy import check_lobotomy
 
 # constants
 #: One minute in seconds
@@ -31,21 +27,15 @@ DATETIME_FORMAT = '%a %Y-%m-%d %H:%M:%S %Z'
 #: Fake a context for use in certain functions that expect one
 FakeContext = namedtuple('FakeContext', ('guild',))
 
-# List of functions to run on startup during on_ready
-startup_handlers = []
 
+class StartupHandlers:
 
-def command(*args, **kwargs):
-    """
-    Decorator to add default checks to new commands. This is just a thin
-    wrapper around :func:`discord.ext.commands.command`, and will accept the
-    same arguments.
-    """
+    "Startup handlers"
 
-    def wrap(f):
-        return check(check_lobotomy)(command_(*args, **kwargs)(f))
+    list = []
 
-    return wrap
+    def __init__(self):
+        raise RuntimeError('Singleton collection; use .list member instead')
 
 
 def get_timespan_chunks(string):
@@ -112,25 +102,28 @@ def seconds_to_str(ts):
     :rtype: str
     """
 
-    diff = ceil(ts)
-    until = ''
+    seconds = ceil(ts)
+    until = []
 
-    if diff >= DAY:
-        until += f'{floor(diff / DAY)} day(s) '
-        diff = diff % DAY
+    if seconds >= DAY:
+        days = floor(seconds / DAY)
+        until.append(f'{days} day{"s" if days > 1 else ""}')
+        seconds = seconds % DAY
 
-    if diff >= HOUR:
-        until += f'{floor(diff / HOUR)} hour(s) '
-        diff = diff % HOUR
+    if seconds >= HOUR:
+        hours = floor(seconds / HOUR)
+        until.append(f'{hours} hour{"s" if hours > 1 else ""}')
+        seconds = seconds % HOUR
 
-    if diff >= MINUTE:
-        until += f'{floor(diff / MINUTE)} minute(s) '
-        diff = diff % MINUTE
+    if seconds >= MINUTE:
+        minutes = floor(seconds / MINUTE)
+        until.append(f'{minutes} minute{"s" if minutes > 1 else ""}')
+        seconds = seconds % MINUTE
 
-    if diff > 0:
-        until += f'{diff} second(s) '
+    if seconds > 0:
+        until.append(f'{seconds} second{"s" if seconds > 1 else ""}')
 
-    return until.strip()
+    return ', '.join(until)
 
 
 def startup(f):
@@ -161,9 +154,7 @@ def startup(f):
             pass
     """
 
-    global startup_handlers
-
-    if f not in startup_handlers:
-        startup_handlers.append(f)
+    if f not in StartupHandlers.list:
+        StartupHandlers.list.append(f)
 
     return f

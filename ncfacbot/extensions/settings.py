@@ -3,12 +3,11 @@
 # stdlib
 import typing
 # 3rd party
-from discord.ext import commands
+from discord.ext.commands import Cog, command
 from functools import partial
 # local
 from .. import log
 from ..authz import channel_only, require_roles
-from ..common import command, THUMBS_DOWN
 from ..settings import register, settings
 
 # messages
@@ -18,7 +17,7 @@ MSG_NO_SETTING = ':person_shrugging: No such setting exists.'
 authz = partial(require_roles, setting='settings.adminroles')
 
 
-class Settings(commands.Cog, name='settings'):
+class Settings(Cog, name='settings'):
 
     """
     Settings commands
@@ -29,11 +28,8 @@ class Settings(commands.Cog, name='settings'):
     def __init__(self, bot):
         self.bot = bot
 
-    @command(name='set')
-    @commands.check(authz)
-    @commands.check(channel_only)
-    async def set(self, ctx, name: typing.Optional[str] = None,
-                  value: typing.Optional[str] = None):
+    @command()
+    async def set(self, ctx, name: typing.Optional[str] = None, *value):
         """
         Change/view a setting's value
 
@@ -54,24 +50,23 @@ class Settings(commands.Cog, name='settings'):
 
             return
 
-        key = ctx.guild.id
+        val = ' '.join(value)
 
-        if value is None:
-            value = settings[name].get(ctx)
+        if not len(val):
+            val = settings[name].get(ctx)
             default = settings[name].default
-            await ctx.send(f':gear: `{name} => {repr(value)}` '
-                           f'_(Default: {repr(default)})_')
+            await ctx.send(f':gear: `{name}`\n'
+                           f'>>> Value: `{repr(val)}`\n'
+                           f'Default: `{repr(default)}`')
             log.info(f'{ctx.author} viewed setting {name}')
-        elif settings[name].set(ctx, value):
+        elif settings[name].set(ctx, val):
             await ctx.send(f':thumbsup: Value updated.')
-            log.info(f'{ctx.author} updated setting {name}: {value}')
+            log.info(f'{ctx.author} updated setting {name}: {val}')
         else:
             await ctx.send(f':thumbsdown: Error updating value.')
-            log.warn(f'{ctx.author} failed to update setting {name}: {value}')
+            log.warn(f'{ctx.author} failed to update setting {name}: {val}')
 
-    @command(name='clear')
-    @commands.check(authz)
-    @commands.check(channel_only)
+    @command()
     async def clear(self, ctx, name):
         "Reset setting <name> to its default value"
 
@@ -86,9 +81,7 @@ class Settings(commands.Cog, name='settings'):
         await ctx.send(':negative_squared_cross_mark: Setting cleared.')
         log.info(f'{ctx.author} cleared setting {name}')
 
-    @command(name='desc')
-    @commands.check(authz)
-    @commands.check(channel_only)
+    @command()
     async def desc(self, ctx, name):
         "View description of setting <name>"
 
@@ -117,4 +110,10 @@ def setup(bot):
              'The server roles that are allowed to administer settings. '
              'Separate multiple values with commas. Administrators and '
              'moderators have de facto access to all commands.')
-    bot.add_cog(Settings(bot))
+    cog = Settings(bot)
+
+    for c in cog.get_commands():
+        c.add_check(authz)
+        c.add_check(channel_only)
+
+    bot.add_cog(cog)

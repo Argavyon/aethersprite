@@ -3,12 +3,14 @@
 # stdlib
 from datetime import datetime, timedelta, timezone
 import typing
+# 3rd party
+from discord.ext.commands import command
 # local
 from .. import log
-from ..common import command, DATETIME_FORMAT, get_timespan_chunks
+from ..common import DATETIME_FORMAT, get_timespan_chunks
 
 
-@command(brief='Get current time or offset in GMT')
+@command(brief='Get current time or offset in GMT', aliases=['utc',])
 async def gmt(ctx, *, offset: typing.Optional[str]):
     """
     Get current time in GMT or offset by days, hours, and minutes.

@@ -5,3 +5,4 @@
 .buildinfo
 docs/_build/
 objects.inv
+.vscode/
