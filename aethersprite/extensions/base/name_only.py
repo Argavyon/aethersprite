@@ -7,8 +7,8 @@ and only respond to commands when addressed directly.
 from discord import DMChannel
 from discord.ext.commands import Context
 # local
-from .. import log
-from ..settings import register, settings
+from aethersprite import log
+from aethersprite.settings import register, settings
 
 
 async def check_name_only(ctx: Context):
@@ -32,7 +32,12 @@ def setup(bot):
     bot.add_check(check_name_only)
     # settings
     register('nameonly', None, lambda x: True, False,
-             'If set, the bot will only respond when directly addressed.')
+             'If set, the bot will only respond when directly mentioned. '
+             '__**Note**__: It is _extremely_ important that you give the bot '
+             'a nickname before setting this. If the bot does not have a nick '
+             'set, its username will be the same as its role and it will be '
+             'very difficult to mention it directly, potentially bricking the '
+             'bot altogether.')
     register('nameonly.channel', None, lambda x: True, True,
-             'If set, the bot will only respond when directly addressed '
-             '(in this channel).')
+             'If set, the bot will only respond when mentioned directly '
+             '(in this channel). **See warning from `nameonly` setting.**')

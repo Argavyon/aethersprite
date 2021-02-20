@@ -6,3 +6,4 @@
 docs/_build/
 objects.inv
 .vscode/
+config.toml

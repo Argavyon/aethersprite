@@ -6,15 +6,16 @@ import typing
 from discord.ext.commands import Cog, command
 from functools import partial
 # local
-from .. import log
-from ..authz import channel_only, require_roles
-from ..settings import register, settings
+from aethersprite import log
+from aethersprite.authz import channel_only, require_roles
+from aethersprite.settings import register, settings
 
 # messages
 MSG_NO_SETTING = ':person_shrugging: No such setting exists.'
 
 # authorization decorator
-authz = partial(require_roles, setting='settings.adminroles')
+authz = partial(require_roles, setting='settings.adminroles',
+                open_by_default=False)
 
 
 class Settings(Cog, name='settings'):
@@ -77,7 +78,7 @@ class Settings(Cog, name='settings'):
 
             return
 
-        settings[name].set(ctx, None)
+        settings[name].set(ctx, None, raw=True)
         await ctx.send(':negative_squared_cross_mark: Setting cleared.')
         log.info(f'{ctx.author} cleared setting {name}')
 

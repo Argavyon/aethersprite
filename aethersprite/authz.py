@@ -5,8 +5,10 @@ from os import environ
 # 3rd party
 from discord import DMChannel
 # local
-from . import log
+from . import config, log
 from .common import POLICE_OFFICER
+
+owner = config['bot'].get('owner', environ.get('NCFACBOT_OWNER', None))
 
 
 async def channel_only(ctx):
@@ -26,18 +28,37 @@ async def require_admin(ctx):
     perms = ctx.author.permissions_in(ctx.channel)
 
     if perms.administrator or perms.manage_channels or perms.manage_guild \
-            or environ.get('NCFACBOT_OWNER', '') == str(ctx.author):
+            or owner == str(ctx.author):
         return True
+
+    cog = ctx.bot.get_cog('alias')
+
+    if cog is None:
+        return False
+
+    aliases = cog.get_aliases(ctx, 'nchelp')
+    help_aliases = ['nchelp'] + aliases
+
+    # only react if they invoked the command directly (i.e. not via !help)
+    if ctx.invoked_with not in help_aliases:
+        await ctx.message.add_reaction(POLICE_OFFICER)
+        log.warn(f'{ctx.author} attempted to access admin command '
+                 f'{ctx.command}')
 
     return False
 
 
-async def require_roles(ctx, setting):
+async def require_roles(ctx, setting, open_by_default=True):
     """
     Check for requiring particular roles (loaded from the given setting) to
     execute a command. For more than one setting (if ``setting`` is a
     list/tuple), the aggregate list will be used. Membership in at least one of
     the roles pulled from the settings is required to pass the filter.
+
+    If this check is used and the setting is empty or nonexistent, the default
+    behavior is to allow anyone and everyone to use the command. If you would
+    like for it to default to "closed" behavior, set the ``open_by_default``
+    argument to ``False``.
 
     Example, if your setting with role(s) is ``setting.name``:
 
@@ -45,7 +66,7 @@ async def require_roles(ctx, setting):
 
         from functools import partial
         from discord.ext.commands import check, command
-        from ncfacbot.authz import require_roles
+        from aethersprite.authz import require_roles
 
         authz = partial(require_roles, setting='setting.name')
 
@@ -66,7 +87,7 @@ async def require_roles(ctx, setting):
     perms = ctx.author.permissions_in(ctx.channel)
 
     if perms.administrator or perms.manage_channels or perms.manage_guild \
-            or environ.get('NCFACBOT_OWNER', '') == str(ctx.author):
+            or owner == str(ctx.author):
         # Superusers get a pass
         return True
 
@@ -88,8 +109,8 @@ async def require_roles(ctx, setting):
         raise ValueError('setting must be str, list, or tuple')
 
     if values is None:
-        # no roles set; allow anyone
-        return True
+        # no roles set, use default
+        return open_by_default
 
     roles = [s.strip().lower() for s in values.split(',')] \
             if len(values) else tuple()
@@ -98,8 +119,20 @@ async def require_roles(ctx, setting):
                                if r.name.lower() in roles]) > 0:
         return True
 
-    await ctx.message.add_reaction(POLICE_OFFICER)
-    log.warn(f'{ctx.author} attempted to access unauthorized command '
-             f'{ctx.command}')
+    cog = ctx.bot.get_cog('alias')
+
+    if cog is None:
+        log.warn('alias cog not loaded')
+
+        return False
+
+    aliases = cog.get_aliases(ctx, 'nchelp')
+    help_aliases = ['nchelp'] + aliases
+
+    # only react if they invoked the command directly (i.e. not via !help)
+    if ctx.invoked_with not in help_aliases:
+        await ctx.message.add_reaction(POLICE_OFFICER)
+        log.warn(f'{ctx.author} attempted to access unauthorized command '
+                 f'{ctx.command}')
 
     return False
