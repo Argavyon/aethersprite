@@ -178,22 +178,6 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_next_tick"><a class="viewcode-back" href="../../index.html#aethersprite.common.get_next_tick">[docs]</a><span class="k">def</span> <span class="nf">get_next_tick</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate future tick as datetime in GMT.</span>
-
-<span class="sd">    :param n: The number of ticks forward to calculate</span>
-<span class="sd">    :type n: int</span>
-<span class="sd">    :returns: The time of the calculated tick</span>
-<span class="sd">    :rtype: datetime</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">now</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span>
-    <span class="n">tick_stamp</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span> <span class="o">+</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">FIFTEEN_MINS</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="n">now</span> <span class="o">%</span> <span class="n">FIFTEEN_MINS</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">tick_stamp</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="handle_member_join"><a class="viewcode-back" href="../../index.html#aethersprite.common.handle_member_join">[docs]</a><span class="k">def</span> <span class="nf">handle_member_join</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="s2">&quot;on_member_join event handler decorator&quot;</span>
 
@@ -212,19 +196,19 @@
 <span class="sd">    .. code:: python</span>
 
 <span class="sd">        from discord.ext.commands import Cog</span>
-<span class="sd">        from aethersprite.common import startup</span>
+<span class="sd">        from aethersprite.common import handle_ready</span>
 
 <span class="sd">        class SomeClass(Cog):</span>
 <span class="sd">            def __init__(self, bot):</span>
 <span class="sd">                self.bot = bot</span>
-<span class="sd">                self.on_ready = startup(self.on_ready)</span>
+<span class="sd">                self.on_ready = handle_ready(self.on_ready)</span>
 
 <span class="sd">            def on_ready(self, _):</span>
 <span class="sd">                # don&#39;t care about the bot parameter here, but still have to include it</span>
 <span class="sd">                # to avoid exceptions</span>
 <span class="sd">                pass</span>
 
-<span class="sd">        @startup</span>
+<span class="sd">        @handle_ready</span>
 <span class="sd">        def on_ready(bot):</span>
 <span class="sd">            # since we&#39;re not a Cog, we need the bot reference to do stuff</span>
 <span class="sd">            pass</span>

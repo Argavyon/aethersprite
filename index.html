@@ -43,7 +43,7 @@
 <p>Nexus Clash Faction Discord bot</p>
 <dl class="py data">
 <dt id="aethersprite.config">
-<code class="sig-prename descclassname">aethersprite.</code><code class="sig-name descname">config</code><em class="property"> = {'bot': {'extensions': ['aethersprite.extensions.base._all'], 'owner': '', 'token': ''}, 'webapp': {'flask': {'SERVER_HOST': '0.0.0.0', 'SERVER_NAME': 'localhost', 'SERVER_PORT': 5000}, 'proxies': None}}</em><a class="headerlink" href="#aethersprite.config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">aethersprite.</code><code class="sig-name descname">config</code><em class="property"> = {'bot': {'extensions': ['aethersprite.extensions.base._all'], 'owner': 'haliphax#4859', 'token': 'SOMEREALLYLONGSTRINGTHATDISCORDGIVESYOU'}, 'webapp': {'flask': {'SERVER_HOST': '0.0.0.0', 'SERVER_NAME': 'localhost:5000', 'SERVER_PORT': 5000}, 'proxies': 1}}</em><a class="headerlink" href="#aethersprite.config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configuration</p>
 </dd></dl>
 
@@ -194,23 +194,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="aethersprite.common.get_next_tick">
-<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">get_next_tick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/common.html#get_next_tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.get_next_tick" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate future tick as datetime in GMT.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>n</strong> (<em>int</em>) – The number of ticks forward to calculate</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The time of the calculated tick</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>datetime</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="aethersprite.common.get_role_for_id">
 <code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">get_role_for_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">guild</span></em>, <em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/aethersprite/common.html#get_role_for_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.get_role_for_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return role name for given guild and role ID.</p>
@@ -258,19 +241,19 @@ event. The first argument of the function (not counting <code class="docutils li
 function is a method) will be provided with a reference to the bot. To
 decorate a method, assign the handler during <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">Cog</span>
-<span class="kn">from</span> <span class="nn">aethersprite.common</span> <span class="kn">import</span> <span class="n">startup</span>
+<span class="kn">from</span> <span class="nn">aethersprite.common</span> <span class="kn">import</span> <span class="n">handle_ready</span>
 
 <span class="k">class</span> <span class="nc">SomeClass</span><span class="p">(</span><span class="n">Cog</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bot</span> <span class="o">=</span> <span class="n">bot</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">on_ready</span> <span class="o">=</span> <span class="n">startup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_ready</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_ready</span> <span class="o">=</span> <span class="n">handle_ready</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_ready</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
         <span class="c1"># don&#39;t care about the bot parameter here, but still have to include it</span>
         <span class="c1"># to avoid exceptions</span>
         <span class="k">pass</span>
 
-<span class="nd">@startup</span>
+<span class="nd">@handle_ready</span>
 <span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="n">bot</span><span class="p">):</span>
     <span class="c1"># since we&#39;re not a Cog, we need the bot reference to do stuff</span>
     <span class="k">pass</span>
