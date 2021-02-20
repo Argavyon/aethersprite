@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>ncfacbot &#8212; ncfacbot  documentation</title>
+    <title>Aethersprite &#8212; ncfacbot  documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -33,94 +33,169 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="ncfacbot">
-<h1>ncfacbot<a class="headerlink" href="#ncfacbot" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="aethersprite">
+<h1>Aethersprite<a class="headerlink" href="#aethersprite" title="Permalink to this headline">¶</a></h1>
 <p>A work in progress.</p>
 <div class="toctree-wrapper compound">
 </div>
-<div class="section" id="module-ncfacbot">
-<span id="main"></span><h2>Main<a class="headerlink" href="#module-ncfacbot" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-aethersprite">
+<span id="main"></span><h2>Main<a class="headerlink" href="#module-aethersprite" title="Permalink to this headline">¶</a></h2>
 <p>Nexus Clash Faction Discord bot</p>
 <dl class="py data">
-<dt id="ncfacbot.log">
-<code class="sig-prename descclassname">ncfacbot.</code><code class="sig-name descname">log</code><em class="property"> = &lt;Logger ncfacbot (WARNING)&gt;</em><a class="reference internal" href="_modules/logging.html#log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.log" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.config">
+<code class="sig-prename descclassname">aethersprite.</code><code class="sig-name descname">config</code><em class="property"> = {'bot': {'extensions': ['aethersprite.extensions.base._all'], 'owner': '', 'token': ''}, 'webapp': {'flask': {'SERVER_HOST': '0.0.0.0', 'SERVER_NAME': 'localhost', 'SERVER_PORT': 5000}, 'proxies': None}}</em><a class="headerlink" href="#aethersprite.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configuration</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="aethersprite.log">
+<code class="sig-prename descclassname">aethersprite.</code><code class="sig-name descname">log</code><em class="property"> = &lt;Logger aethersprite (WARNING)&gt;</em><a class="reference internal" href="_modules/logging.html#log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Root logger instance</p>
 </dd></dl>
 
-<span class="target" id="module-ncfacbot.webapp"></span><p>Web application</p>
+<span class="target" id="module-aethersprite.webapp"></span><p>Web application</p>
 <dl class="py data">
-<dt id="ncfacbot.webapp.app">
-<code class="sig-prename descclassname">ncfacbot.webapp.</code><code class="sig-name descname">app</code><em class="property"> = &lt;Flask 'ncfacbot.webapp'&gt;</em><a class="headerlink" href="#ncfacbot.webapp.app" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.webapp.app">
+<code class="sig-prename descclassname">aethersprite.webapp.</code><code class="sig-name descname">app</code><em class="property"> = &lt;Flask 'aethersprite.webapp'&gt;</em><a class="headerlink" href="#aethersprite.webapp.app" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flask application</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-ncfacbot.common">
-<span id="common"></span><h2>Common<a class="headerlink" href="#module-ncfacbot.common" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-aethersprite.common">
+<span id="common"></span><h2>Common<a class="headerlink" href="#module-aethersprite.common" title="Permalink to this headline">¶</a></h2>
 <p>Common functions module</p>
 <dl class="py data">
-<dt id="ncfacbot.common.DATETIME_FORMAT">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">DATETIME_FORMAT</code><em class="property"> = '%a %Y-%m-%d %H:%M:%S %Z'</em><a class="headerlink" href="#ncfacbot.common.DATETIME_FORMAT" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.DATETIME_FORMAT">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">DATETIME_FORMAT</code><em class="property"> = '%a %Y-%m-%d %H:%M:%S %Z'</em><a class="headerlink" href="#aethersprite.common.DATETIME_FORMAT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Formatting string for datetime objects</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="ncfacbot.common.DAY">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">DAY</code><em class="property"> = 86400</em><a class="headerlink" href="#ncfacbot.common.DAY" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.DAY">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">DAY</code><em class="property"> = 86400</em><a class="headerlink" href="#aethersprite.common.DAY" title="Permalink to this definition">¶</a></dt>
 <dd><p>One day in seconds</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="ncfacbot.common.FIFTEEN_MINS">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">FIFTEEN_MINS</code><em class="property"> = 900</em><a class="headerlink" href="#ncfacbot.common.FIFTEEN_MINS" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.FIFTEEN_MINS">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">FIFTEEN_MINS</code><em class="property"> = 900</em><a class="headerlink" href="#aethersprite.common.FIFTEEN_MINS" title="Permalink to this definition">¶</a></dt>
 <dd><p>15 minutes in seconds</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="ncfacbot.common.FakeContext">
-<em class="property">class </em><code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">FakeContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">guild</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ncfacbot.common.FakeContext" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.FakeContext">
+<em class="property">class </em><code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">FakeContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">guild</span></em><span class="sig-paren">)</span><a class="headerlink" href="#aethersprite.common.FakeContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fake a context for use in certain functions that expect one</p>
 <dl class="py attribute">
-<dt id="ncfacbot.common.FakeContext.guild">
-<code class="sig-name descname">guild</code><a class="headerlink" href="#ncfacbot.common.FakeContext.guild" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.FakeContext.guild">
+<code class="sig-name descname">guild</code><a class="headerlink" href="#aethersprite.common.FakeContext.guild" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py data">
-<dt id="ncfacbot.common.HOUR">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">HOUR</code><em class="property"> = 3600</em><a class="headerlink" href="#ncfacbot.common.HOUR" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.HOUR">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">HOUR</code><em class="property"> = 3600</em><a class="headerlink" href="#aethersprite.common.HOUR" title="Permalink to this definition">¶</a></dt>
 <dd><p>One hour in seconds</p>
 </dd></dl>
 
-<dl class="py data">
-<dt id="ncfacbot.common.MINUTE">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">MINUTE</code><em class="property"> = 60</em><a class="headerlink" href="#ncfacbot.common.MINUTE" title="Permalink to this definition">¶</a></dt>
-<dd><p>One minute in seconds</p>
+<dl class="py class">
+<dt id="aethersprite.common.HandlerCollection">
+<em class="property">class </em><code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">HandlerCollection</code><a class="reference internal" href="_modules/aethersprite/common.html#HandlerCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.HandlerCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static collection of handlers; to be inherited from</p>
+<dl class="py method">
+<dt id="aethersprite.common.HandlerCollection.add">
+<em class="property">classmethod </em><code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">handler</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/common.html#HandlerCollection.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.HandlerCollection.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add handler to collection.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py data">
-<dt id="ncfacbot.common.POLICE_OFFICER">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">POLICE_OFFICER</code><em class="property"> = '👮'</em><a class="headerlink" href="#ncfacbot.common.POLICE_OFFICER" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.MINUTE">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">MINUTE</code><em class="property"> = 60</em><a class="headerlink" href="#aethersprite.common.MINUTE" title="Permalink to this definition">¶</a></dt>
+<dd><p>One minute in seconds</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="aethersprite.common.MemberJoinHandlers">
+<em class="property">class </em><code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">MemberJoinHandlers</code><a class="reference internal" href="_modules/aethersprite/common.html#MemberJoinHandlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.MemberJoinHandlers" title="Permalink to this definition">¶</a></dt>
+<dd><p>on_member_join handlers</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="aethersprite.common.POLICE_OFFICER">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">POLICE_OFFICER</code><em class="property"> = '👮'</em><a class="headerlink" href="#aethersprite.common.POLICE_OFFICER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Police officer emoji</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="ncfacbot.common.StartupHandlers">
-<em class="property">class </em><code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">StartupHandlers</code><a class="reference internal" href="_modules/ncfacbot/common.html#StartupHandlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.StartupHandlers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Startup handlers</p>
+<dt id="aethersprite.common.ReadyHandlers">
+<em class="property">class </em><code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">ReadyHandlers</code><a class="reference internal" href="_modules/aethersprite/common.html#ReadyHandlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.ReadyHandlers" title="Permalink to this definition">¶</a></dt>
+<dd><p>on_ready handlers</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="ncfacbot.common.THUMBS_DOWN">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">THUMBS_DOWN</code><em class="property"> = '👎'</em><a class="headerlink" href="#ncfacbot.common.THUMBS_DOWN" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.THUMBS_DOWN">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">THUMBS_DOWN</code><em class="property"> = '👎'</em><a class="headerlink" href="#aethersprite.common.THUMBS_DOWN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thumbs down emoji</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ncfacbot.common.get_next_tick">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">get_next_tick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#get_next_tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.get_next_tick" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.get_channel_for_id">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">get_channel_for_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">guild</span></em>, <em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/aethersprite/common.html#get_channel_for_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.get_channel_for_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return channel name for given guild and channel ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>guild</strong> – The guild object to search</p></li>
+<li><p><strong>id</strong> – The channel ID to search for</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the channel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aethersprite.common.get_id_for_channel">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">get_id_for_channel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">guild</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/aethersprite/common.html#get_id_for_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.get_id_for_channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return channel ID for given guild and channel name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>guild</strong> – The guild object to search</p></li>
+<li><p><strong>channel</strong> – The channel to search for</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The ID of the channel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aethersprite.common.get_id_for_role">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">get_id_for_role</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">guild</span></em>, <em class="sig-param"><span class="n">role</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/aethersprite/common.html#get_id_for_role"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.get_id_for_role" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return role ID for given guild and role name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>guild</strong> – The guild object to search</p></li>
+<li><p><strong>role</strong> – The role to search for</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The ID of the role</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aethersprite.common.get_next_tick">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">get_next_tick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/common.html#get_next_tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.get_next_tick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate future tick as datetime in GMT.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -136,8 +211,25 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="ncfacbot.common.get_timespan_chunks">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">get_timespan_chunks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#get_timespan_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.get_timespan_chunks" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.get_role_for_id">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">get_role_for_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">guild</span></em>, <em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/aethersprite/common.html#get_role_for_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.get_role_for_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return role name for given guild and role ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>guild</strong> – The guild object to search</p></li>
+<li><p><strong>id</strong> – The role ID to search for</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the role</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aethersprite.common.get_timespan_chunks">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">get_timespan_chunks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/common.html#get_timespan_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.get_timespan_chunks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search string for chunks of timespan parameters, like 5d 10h 15m, etc.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -153,50 +245,20 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="ncfacbot.common.normalize_username">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">normalize_username</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">author</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#normalize_username"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.normalize_username" title="Permalink to this definition">¶</a></dt>
-<dd><p>Normalize username for use in messages. If the user has a nick set, that
-will be used; otherwise, their plain username will be returned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>author</strong> – The User object to normalize</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The normalized name</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
+<dt id="aethersprite.common.handle_member_join">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">handle_member_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/common.html#handle_member_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.handle_member_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>on_member_join event handler decorator</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ncfacbot.common.seconds_to_str">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">seconds_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#seconds_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.seconds_to_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a span of seconds into a human-readable format (e.g. “5 days
-8 hours 1 minute 36 seconds”).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ts</strong> (<em>int</em>) – The span to convert</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The human-readable representation</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ncfacbot.common.startup">
-<code class="sig-prename descclassname">ncfacbot.common.</code><code class="sig-name descname">startup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/common.html#startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.common.startup" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.common.handle_ready">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">handle_ready</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/common.html#handle_ready"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.handle_ready" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator to add function to list of handlers to run for the <code class="docutils literal notranslate"><span class="pre">on_ready</span></code>
 event. The first argument of the function (not counting <code class="docutils literal notranslate"><span class="pre">self</span></code> if the
 function is a method) will be provided with a reference to the bot. To
 decorate a method, assign the handler during <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">Cog</span>
-<span class="kn">from</span> <span class="nn">ncfacbot.common</span> <span class="kn">import</span> <span class="n">startup</span>
+<span class="kn">from</span> <span class="nn">aethersprite.common</span> <span class="kn">import</span> <span class="n">startup</span>
 
 <span class="k">class</span> <span class="nc">SomeClass</span><span class="p">(</span><span class="n">Cog</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
@@ -216,16 +278,34 @@ decorate a method, assign the handler during <code class="docutils literal notra
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt id="aethersprite.common.seconds_to_str">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">seconds_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/common.html#seconds_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.seconds_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a span of seconds into a human-readable format (e.g. “5 days
+8 hours 1 minute 36 seconds”).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ts</strong> (<em>int</em>) – The span to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The human-readable representation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="module-ncfacbot.settings">
-<span id="settings"></span><h2>Settings<a class="headerlink" href="#module-ncfacbot.settings" title="Permalink to this headline">¶</a></h2>
-<p>Settings module; interfaced with via <code class="xref py py-mod docutils literal notranslate"><span class="pre">ncfacbot.extensions.settings</span></code></p>
+<div class="section" id="module-aethersprite.settings">
+<span id="settings"></span><h2>Settings<a class="headerlink" href="#module-aethersprite.settings" title="Permalink to this headline">¶</a></h2>
+<p>Settings module; interfaced with via <code class="xref py py-mod docutils literal notranslate"><span class="pre">aethersprite.extensions.settings</span></code></p>
 <p>This provides methods by which extension authors can register and use settings
 in their code, and end users can manipulate those settings via bot commands
 (in the aforementioned <cite>settings</cite> extension).</p>
 <p>Examples for registering a setting and getting/changing/resetting its value:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">command</span>
-<span class="kn">from</span> <span class="nn">ncfacbot.settings</span> <span class="kn">import</span> <span class="n">register</span><span class="p">,</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">aethersprite.settings</span> <span class="kn">import</span> <span class="n">register</span><span class="p">,</span> <span class="n">settings</span>
 
 <span class="n">register</span><span class="p">(</span><span class="s1">&#39;my.setting&#39;</span><span class="p">,</span> <span class="s1">&#39;default value&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
          <span class="s1">&#39;There are many settings like it, but this one is mine.&#39;</span><span class="p">)</span>
@@ -244,34 +324,43 @@ in their code, and end users can manipulate those settings via bot commands
 </pre></div>
 </div>
 <dl class="py class">
-<dt id="ncfacbot.settings.Setting">
-<em class="property">class </em><code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">Setting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">validate</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#Setting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.Setting" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.settings.Setting">
+<em class="property">class </em><code class="sig-prename descclassname">aethersprite.settings.</code><code class="sig-name descname">Setting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">validate</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filter</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>SettingFilter<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#Setting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.Setting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setting class; represents an individual setting definition</p>
 <dl class="py attribute">
-<dt id="ncfacbot.settings.Setting.channel">
-<code class="sig-name descname">channel</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.settings.Setting.channel" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.settings.Setting.channel">
+<code class="sig-name descname">channel</code><em class="property"> = None</em><a class="headerlink" href="#aethersprite.settings.Setting.channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>If this is a channel (and not a guild) setting</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="ncfacbot.settings.Setting.default">
-<code class="sig-name descname">default</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.settings.Setting.default" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.settings.Setting.default">
+<code class="sig-name descname">default</code><em class="property"> = None</em><a class="headerlink" href="#aethersprite.settings.Setting.default" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default value</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="ncfacbot.settings.Setting.description">
-<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.settings.Setting.description" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.settings.Setting.description">
+<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#aethersprite.settings.Setting.description" title="Permalink to this definition">¶</a></dt>
 <dd><p>This setting’s description</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="aethersprite.settings.Setting.filter">
+<code class="sig-name descname">filter</code><em class="property"> = None</em><a class="headerlink" href="#aethersprite.settings.Setting.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The filter used to manipulate setting input/output</p>
+</dd></dl>
+
 <dl class="py method">
-<dt id="ncfacbot.settings.Setting.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#Setting.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.Setting.get" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.settings.Setting.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">raw</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#Setting.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.Setting.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the setting’s value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ctx</strong> – The Discord connection context</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – The Discord connection context</p></li>
+<li><p><strong>raw</strong> – Set to True to bypass filtering</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The setting’s value</p>
@@ -283,20 +372,21 @@ in their code, and end users can manipulate those settings via bot commands
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="ncfacbot.settings.Setting.name">
-<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.settings.Setting.name" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.settings.Setting.name">
+<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#aethersprite.settings.Setting.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>The setting’s name</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="ncfacbot.settings.Setting.set">
-<code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#Setting.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.Setting.set" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.settings.Setting.set">
+<code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">raw</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#Setting.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.Setting.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the setting’s value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ctx</strong> – The Discord connection context</p></li>
 <li><p><strong>value</strong> – The value to assign (or <code class="docutils literal notranslate"><span class="pre">None</span></code> for the default)</p></li>
+<li><p><strong>raw</strong> – Set to True to bypass filtering</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -309,16 +399,34 @@ in their code, and end users can manipulate those settings via bot commands
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="ncfacbot.settings.Setting.validate">
-<code class="sig-name descname">validate</code><em class="property"> = None</em><a class="headerlink" href="#ncfacbot.settings.Setting.validate" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.settings.Setting.validate">
+<code class="sig-name descname">validate</code><em class="property"> = None</em><a class="headerlink" href="#aethersprite.settings.Setting.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validator function</p>
 </dd></dl>
 
 </dd></dl>
 
+<dl class="py class">
+<dt id="aethersprite.settings.SettingFilter">
+<em class="property">class </em><code class="sig-prename descclassname">aethersprite.settings.</code><code class="sig-name descname">SettingFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#SettingFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.SettingFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class with methods for filtering a setting’s input and output</p>
+<dl class="py method">
+<dt id="aethersprite.settings.SettingFilter.in_">
+<code class="sig-name descname">in_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#SettingFilter.in_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.SettingFilter.in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must override; input filter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="aethersprite.settings.SettingFilter.out">
+<code class="sig-name descname">out</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#SettingFilter.out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.SettingFilter.out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must override; output filter.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
-<dt id="ncfacbot.settings.register">
-<code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">validator</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/settings.html#register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.settings.register" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.settings.register">
+<code class="sig-prename descclassname">aethersprite.settings.</code><code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">validator</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filter</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#aethersprite.settings.SettingFilter" title="aethersprite.settings.SettingFilter">aethersprite.settings.SettingFilter</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register a setting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -327,44 +435,49 @@ in their code, and end users can manipulate those settings via bot commands
 <li><p><strong>default</strong> – The default value if none is provided</p></li>
 <li><p><strong>validator</strong> – The validation function for the setting’s value</p></li>
 <li><p><strong>channel</strong> – If this is a channel (and not a guild) setting</p></li>
+<li><p><strong>filter</strong> – </p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py data">
-<dt id="ncfacbot.settings.settings">
-<code class="sig-prename descclassname">ncfacbot.settings.</code><code class="sig-name descname">settings</code><em class="property"> = {'safe.key': &lt;ncfacbot.settings.Setting object&gt;, 'safe.roles': &lt;ncfacbot.settings.Setting object&gt;}</em><a class="headerlink" href="#ncfacbot.settings.settings" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.settings.settings">
+<code class="sig-prename descclassname">aethersprite.settings.</code><code class="sig-name descname">settings</code><em class="property"> = {}</em><a class="headerlink" href="#aethersprite.settings.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setting definitions</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-ncfacbot.authz">
-<span id="authorization"></span><h2>Authorization<a class="headerlink" href="#module-ncfacbot.authz" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-aethersprite.authz">
+<span id="authorization"></span><h2>Authorization<a class="headerlink" href="#module-aethersprite.authz" title="Permalink to this headline">¶</a></h2>
 <p>Authorization module</p>
 <dl class="py function">
-<dt id="ncfacbot.authz.channel_only">
-<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.authz.</code><code class="sig-name descname">channel_only</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/authz.html#channel_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.authz.channel_only" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.authz.channel_only">
+<em class="property">async </em><code class="sig-prename descclassname">aethersprite.authz.</code><code class="sig-name descname">channel_only</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/authz.html#channel_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.authz.channel_only" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check for bot commands that should only operate in a channel</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ncfacbot.authz.require_admin">
-<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.authz.</code><code class="sig-name descname">require_admin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/authz.html#require_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.authz.require_admin" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.authz.require_admin">
+<em class="property">async </em><code class="sig-prename descclassname">aethersprite.authz.</code><code class="sig-name descname">require_admin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/authz.html#require_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.authz.require_admin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check for requiring admin/mod privileges to execute a command.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ncfacbot.authz.require_roles">
-<em class="property">async </em><code class="sig-prename descclassname">ncfacbot.authz.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ncfacbot/authz.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ncfacbot.authz.require_roles" title="Permalink to this definition">¶</a></dt>
+<dt id="aethersprite.authz.require_roles">
+<em class="property">async </em><code class="sig-prename descclassname">aethersprite.authz.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">setting</span></em>, <em class="sig-param"><span class="n">open_by_default</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/authz.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.authz.require_roles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check for requiring particular roles (loaded from the given setting) to
 execute a command. For more than one setting (if <code class="docutils literal notranslate"><span class="pre">setting</span></code> is a
 list/tuple), the aggregate list will be used. Membership in at least one of
 the roles pulled from the settings is required to pass the filter.</p>
+<p>If this check is used and the setting is empty or nonexistent, the default
+behavior is to allow anyone and everyone to use the command. If you would
+like for it to default to “closed” behavior, set the <code class="docutils literal notranslate"><span class="pre">open_by_default</span></code>
+argument to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 <p>Example, if your setting with role(s) is <code class="docutils literal notranslate"><span class="pre">setting.name</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">check</span><span class="p">,</span> <span class="n">command</span>
-<span class="kn">from</span> <span class="nn">ncfacbot.authz</span> <span class="kn">import</span> <span class="n">require_roles</span>
+<span class="kn">from</span> <span class="nn">aethersprite.authz</span> <span class="kn">import</span> <span class="n">require_roles</span>
 
 <span class="n">authz</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">require_roles</span><span class="p">,</span> <span class="n">setting</span><span class="o">=</span><span class="s1">&#39;setting.name&#39;</span><span class="p">)</span>
 
@@ -394,11 +507,11 @@ the roles pulled from the settings is required to pass the filter.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">ncfacbot</a><ul>
-<li><a class="reference internal" href="#module-ncfacbot">Main</a></li>
-<li><a class="reference internal" href="#module-ncfacbot.common">Common</a></li>
-<li><a class="reference internal" href="#module-ncfacbot.settings">Settings</a></li>
-<li><a class="reference internal" href="#module-ncfacbot.authz">Authorization</a></li>
+<li><a class="reference internal" href="#">Aethersprite</a><ul>
+<li><a class="reference internal" href="#module-aethersprite">Main</a></li>
+<li><a class="reference internal" href="#module-aethersprite.common">Common</a></li>
+<li><a class="reference internal" href="#module-aethersprite.settings">Settings</a></li>
+<li><a class="reference internal" href="#module-aethersprite.authz">Authorization</a></li>
 </ul>
 </li>
 </ul>
