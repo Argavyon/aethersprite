@@ -1,5 +1,5 @@
-ncfacbot
-========
+Aethersprite
+============
 
 A work in progress.
 
@@ -10,29 +10,29 @@ A work in progress.
 Main
 ----
 
-.. automodule:: ncfacbot
+.. automodule:: aethersprite
     :members:
 
-.. automodule:: ncfacbot.webapp
+.. automodule:: aethersprite.webapp
     :members:
 
 
 Common
 ------
 
-.. automodule:: ncfacbot.common
+.. automodule:: aethersprite.common
     :members:
 
 
 Settings
 --------
 
-.. automodule:: ncfacbot.settings
+.. automodule:: aethersprite.settings
     :members:
 
 
 Authorization
 -------------
 
-.. automodule:: ncfacbot.authz
+.. automodule:: aethersprite.authz
     :members:
