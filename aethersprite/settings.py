@@ -155,7 +155,8 @@ def register(name: str, default: str, validator: callable,
     :param default: The default value if none is provided
     :param validator: The validation function for the setting's value
     :param channel: If this is a channel (and not a guild) setting
-    :param filter:
+    :param filter: The :class:`aethersprite.filters.SettingFilter` to use
+        for filtering value input and output
     """
 
     global settings
