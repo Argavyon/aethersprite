@@ -43,3 +43,10 @@ Authorization
 
 .. automodule:: aethersprite.authz
     :members:
+
+
+Handlers
+--------
+
+.. automodule:: aethersprite.handlers
+    :members:

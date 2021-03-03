@@ -65,40 +65,6 @@
 <span class="n">FakeContext</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;FakeContext&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;guild&#39;</span><span class="p">,))</span>
 
 
-<div class="viewcode-block" id="HandlerCollection"><a class="viewcode-back" href="../../index.html#aethersprite.common.HandlerCollection">[docs]</a><span class="k">class</span> <span class="nc">HandlerCollection</span><span class="p">:</span>
-
-    <span class="s2">&quot;Static collection of handlers; to be inherited from&quot;</span>
-
-    <span class="n">_handlers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">handlers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Singleton collection&#39;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="HandlerCollection.add"><a class="viewcode-back" href="../../index.html#aethersprite.common.HandlerCollection.add">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
-        <span class="s2">&quot;Add handler to collection.&quot;</span>
-
-        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">handlers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">_handlers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
-
-        <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_handlers</span><span class="p">):</span>
-            <span class="k">return</span>
-
-        <span class="bp">cls</span><span class="o">.</span><span class="n">_handlers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-        <span class="bp">cls</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="MemberJoinHandlers"><a class="viewcode-back" href="../../index.html#aethersprite.common.MemberJoinHandlers">[docs]</a><span class="k">class</span> <span class="nc">MemberJoinHandlers</span><span class="p">(</span><span class="n">HandlerCollection</span><span class="p">):</span>
-
-    <span class="s2">&quot;on_member_join handlers&quot;</span></div>
-
-
-<div class="viewcode-block" id="ReadyHandlers"><a class="viewcode-back" href="../../index.html#aethersprite.common.ReadyHandlers">[docs]</a><span class="k">class</span> <span class="nc">ReadyHandlers</span><span class="p">(</span><span class="n">HandlerCollection</span><span class="p">):</span>
-
-    <span class="s2">&quot;on_ready handlers&quot;</span></div>
-
 <div class="viewcode-block" id="get_channel_for_id"><a class="viewcode-back" href="../../index.html#aethersprite.common.get_channel_for_id">[docs]</a><span class="k">def</span> <span class="nf">get_channel_for_id</span><span class="p">(</span><span class="n">guild</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return channel name for given guild and channel ID.</span>
@@ -202,47 +168,6 @@
     <span class="n">minutes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="n">s</span> <span class="k">else</span> <span class="mi">0</span>
 
     <span class="k">return</span> <span class="p">(</span><span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="handle_member_join"><a class="viewcode-back" href="../../index.html#aethersprite.common.handle_member_join">[docs]</a><span class="k">def</span> <span class="nf">handle_member_join</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="s2">&quot;on_member_join event handler decorator&quot;</span>
-
-    <span class="n">MemberJoinHandlers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">f</span></div>
-
-
-<div class="viewcode-block" id="handle_ready"><a class="viewcode-back" href="../../index.html#aethersprite.common.handle_ready">[docs]</a><span class="k">def</span> <span class="nf">handle_ready</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decorator to add function to list of handlers to run for the ``on_ready``</span>
-<span class="sd">    event. The first argument of the function (not counting ``self`` if the</span>
-<span class="sd">    function is a method) will be provided with a reference to the bot. To</span>
-<span class="sd">    decorate a method, assign the handler during ``__init__``.</span>
-
-<span class="sd">    .. code:: python</span>
-
-<span class="sd">        from discord.ext.commands import Cog</span>
-<span class="sd">        from aethersprite.common import handle_ready</span>
-
-<span class="sd">        class SomeClass(Cog):</span>
-<span class="sd">            def __init__(self, bot):</span>
-<span class="sd">                self.bot = bot</span>
-<span class="sd">                self.on_ready = handle_ready(self.on_ready)</span>
-
-<span class="sd">            def on_ready(self, _):</span>
-<span class="sd">                # don&#39;t care about the bot parameter here, but still have to include it</span>
-<span class="sd">                # to avoid exceptions</span>
-<span class="sd">                pass</span>
-
-<span class="sd">        @handle_ready</span>
-<span class="sd">        def on_ready(bot):</span>
-<span class="sd">            # since we&#39;re not a Cog, we need the bot reference to do stuff</span>
-<span class="sd">            pass</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">ReadyHandlers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">f</span></div>
 
 
 <div class="viewcode-block" id="seconds_to_str"><a class="viewcode-back" href="../../index.html#aethersprite.common.seconds_to_str">[docs]</a><span class="k">def</span> <span class="nf">seconds_to_str</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
