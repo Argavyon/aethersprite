@@ -41,11 +41,13 @@
 <span class="sd">.. note::</span>
 
 <span class="sd">    Decorators must be handled differently for methods vs. independent</span>
-<span class="sd">    functions due to how they are invoked. The first argument of the function</span>
-<span class="sd">    (not counting ``self`` if the function is a method) will be provided with a</span>
-<span class="sd">    reference to the bot. To decorate a method, assign the handler during</span>
-<span class="sd">    ``__init__``. To decorate a plain function, you may use the decorator as</span>
-<span class="sd">    normal.</span>
+<span class="sd">    functions due to how they are invoked. To decorate a method, assign the</span>
+<span class="sd">    handler during ``__init__``. AN alternative, if you are able to do so,</span>
+<span class="sd">    is to use a static method. To decorate a plain function, you may use the</span>
+<span class="sd">    decorator as normal.</span>
+
+<span class="sd">    The first argument of the function (not counting ``self`` if the function</span>
+<span class="sd">    is a method) will be provided with a reference to the bot.</span>
 
 <span class="sd">.. code:: python</span>
 
@@ -60,6 +62,13 @@
 <span class="sd">        def on_ready(self, _):</span>
 <span class="sd">            # don&#39;t care about the bot parameter here, but still have to</span>
 <span class="sd">            # include it to avoid exceptions</span>
+<span class="sd">            pass</span>
+
+<span class="sd">        @handle_ready</span>
+<span class="sd">        @staticmethod</span>
+<span class="sd">        def static_ready(bot)</span>
+<span class="sd">            # since this is a static method, we need the bot reference to do</span>
+<span class="sd">            # stuff, as we cannot access &quot;self&quot;</span>
 <span class="sd">            pass</span>
 
 <span class="sd">    @handle_ready</span>
