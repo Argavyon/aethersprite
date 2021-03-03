@@ -3,8 +3,8 @@ import sys
 
 sys.path.append('..')
 
-project = 'ncfacbot'
-copyright = '2020, haliphax'
+project = 'aethersprite'
+copyright = '2021, haliphax'
 author = 'haliphax'
 extensions = [
     'sphinx.ext.autodoc',
