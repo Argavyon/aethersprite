@@ -2,6 +2,8 @@
 
 A [Discord] bot and extension framework.
 
+![Aethersprite](https://github.com/haliphax/aethersprite/raw/assets/aethersprite.jpg)
+
 _This bot is a work in progress. Please excuse my mess..._
 
 ## Features
@@ -18,7 +20,7 @@ _This bot is a work in progress. Please excuse my mess..._
 - [TOML] configuration file for immutable settings
 - Able to load multiple commands together as [extension packs]
 
-## Commands
+## Command sets
 
 - `alias`
   Manage aliases for other commands
@@ -33,6 +35,8 @@ _This bot is a work in progress. Please excuse my mess..._
   Change the bot's nickname per-server
 - `only`
   Only allow whitelisted commands in a channel
+- `roles`
+  Allow members to manage their own membership in chosen roles
 - `settings`
   A collection of commands for manipulating the bot's settings framework
 
@@ -55,11 +59,6 @@ operate based entirely on events.
   if it is mentioned directly
 - `nameonly.channel` _(channel)_
   Like `nameonly`, but this setting applies to individual channels
-
-## Plans
-
-- Ability to set guild for using guild-locked commands via DM
-- Set command prefix per-server and per-channel
 
 ## Extension packs
 

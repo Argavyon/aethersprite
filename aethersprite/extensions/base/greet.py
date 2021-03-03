@@ -5,7 +5,7 @@ users join the guild.
 
 # local
 from aethersprite import log
-from aethersprite.common import FakeContext, handle_member_join
+from aethersprite.common import handle_member_join
 from aethersprite.filters import ChannelFilter
 from aethersprite.settings import register, settings
 
@@ -16,9 +16,8 @@ channel_filter = ChannelFilter('greet.channel')
 async def member_join(member):
     "Greet members when they join."
 
-    ctx = FakeContext(guild={'id': member.guild.id})
-    chan_setting = settings['greet.channel'].get(ctx)
-    msg_setting = settings['greet.message'].get(ctx)
+    chan_setting = settings['greet.channel'].get(member)
+    msg_setting = settings['greet.message'].get(member)
 
     if chan_setting is None or msg_setting is None:
         return
