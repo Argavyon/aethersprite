@@ -31,6 +31,13 @@ Settings
     :members:
 
 
+Filters
+-------
+
+.. automodule:: aethersprite.filters
+    :members:
+
+
 Authorization
 -------------
 
