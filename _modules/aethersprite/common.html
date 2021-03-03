@@ -38,12 +38,11 @@
 <span></span><span class="s2">&quot;Common functions module&quot;</span>
 
 <span class="c1"># stdlib</span>
-<span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span><span class="p">,</span> <span class="n">floor</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="c1"># constants</span>
 <span class="c1">#: One minute in seconds</span>
@@ -100,7 +99,6 @@
 
     <span class="s2">&quot;on_ready handlers&quot;</span></div>
 
-
 <div class="viewcode-block" id="get_channel_for_id"><a class="viewcode-back" href="../../index.html#aethersprite.common.get_channel_for_id">[docs]</a><span class="k">def</span> <span class="nf">get_channel_for_id</span><span class="p">(</span><span class="n">guild</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return channel name for given guild and channel ID.</span>
@@ -130,6 +128,20 @@
     <span class="k">return</span> <span class="n">ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span></div>
 
 
+<div class="viewcode-block" id="get_mixed_channels"><a class="viewcode-back" href="../../index.html#aethersprite.common.get_mixed_channels">[docs]</a><span class="k">def</span> <span class="nf">get_mixed_channels</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a series of group pairs matched from the provided value. The first</span>
+<span class="sd">    element in each pair will be the channel ID if the match was a mention;</span>
+<span class="sd">    it will be empty otherwise. The second element in each pair will be the</span>
+<span class="sd">    plain text of the string token; it will be empty otherwise.</span>
+
+<span class="sd">    :param value: The value to match against</span>
+<span class="sd">    :returns: A series of group pairs (channel ID, channel text)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;#(\d+)&gt; ?|([-_a-zA-Z0-9]+)[, ]*&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div>
+
+
 <div class="viewcode-block" id="get_id_for_role"><a class="viewcode-back" href="../../index.html#aethersprite.common.get_id_for_role">[docs]</a><span class="k">def</span> <span class="nf">get_id_for_role</span><span class="p">(</span><span class="n">guild</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return role ID for given guild and role name.</span>
@@ -157,6 +169,20 @@
     <span class="n">roles</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">guild</span><span class="o">.</span><span class="n">roles</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">roles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">roles</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_mixed_roles"><a class="viewcode-back" href="../../index.html#aethersprite.common.get_mixed_roles">[docs]</a><span class="k">def</span> <span class="nf">get_mixed_roles</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a series of group pairs matched from the provided value. The first</span>
+<span class="sd">    element in each pair will be the role ID if the match was a mention;</span>
+<span class="sd">    it will be empty otherwise. The second element in each pair will be the</span>
+<span class="sd">    plain text of the string token; it will be empty otherwise.</span>
+
+<span class="sd">    :param value: The value to match against</span>
+<span class="sd">    :returns: A series of group pairs (role ID, role text)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;@&amp;(\d+)&gt; ?|([^,]+)[, ]*&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="get_timespan_chunks"><a class="viewcode-back" href="../../index.html#aethersprite.common.get_timespan_chunks">[docs]</a><span class="k">def</span> <span class="nf">get_timespan_chunks</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>

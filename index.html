@@ -43,7 +43,7 @@
 <p>Aethersprite Discord bot/framework</p>
 <dl class="py data">
 <dt id="aethersprite.config">
-<code class="sig-prename descclassname">aethersprite.</code><code class="sig-name descname">config</code><em class="property"> = {'bot': {'extensions': ['aethersprite.extensions.base._all'], 'owner': 'haliphax#4859', 'token': 'SOMEREALLYLONGSTRINGTHATDISCORDGIVESYOU'}, 'webapp': {'flask': {'SERVER_HOST': '0.0.0.0', 'SERVER_NAME': 'localhost:5000', 'SERVER_PORT': 5000}, 'proxies': 1}}</em><a class="headerlink" href="#aethersprite.config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">aethersprite.</code><code class="sig-name descname">config</code><em class="property"> = {'bot': {'data_folder': '.', 'extensions': ['aethersprite.extensions.base._all'], 'help_command': 'aehelp', 'owner': 'haliphax#4859', 'token': 'SOMEREALLYLONGSTRINGTHATDISCORDGIVESYOU'}, 'webapp': {'flask': {'SERVER_HOST': '0.0.0.0', 'SERVER_NAME': 'localhost:5000', 'SERVER_PORT': 5000}, 'proxies': 1}}</em><a class="headerlink" href="#aethersprite.config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configuration</p>
 </dd></dl>
 
@@ -189,6 +189,40 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The ID of the role</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aethersprite.common.get_mixed_channels">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">get_mixed_channels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/aethersprite/common.html#get_mixed_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.get_mixed_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a series of group pairs matched from the provided value. The first
+element in each pair will be the channel ID if the match was a mention;
+it will be empty otherwise. The second element in each pair will be the
+plain text of the string token; it will be empty otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to match against</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A series of group pairs (channel ID, channel text)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aethersprite.common.get_mixed_roles">
+<code class="sig-prename descclassname">aethersprite.common.</code><code class="sig-name descname">get_mixed_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/aethersprite/common.html#get_mixed_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.common.get_mixed_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a series of group pairs matched from the provided value. The first
+element in each pair will be the role ID if the match was a mention;
+it will be empty otherwise. The second element in each pair will be the
+plain text of the string token; it will be empty otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – The value to match against</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A series of group pairs (role ID, role text)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -389,27 +423,9 @@ in their code, and end users can manipulate those settings via bot commands
 
 </dd></dl>
 
-<dl class="py class">
-<dt id="aethersprite.settings.SettingFilter">
-<em class="property">class </em><code class="sig-prename descclassname">aethersprite.settings.</code><code class="sig-name descname">SettingFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#SettingFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.SettingFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class with methods for filtering a setting’s input and output</p>
-<dl class="py method">
-<dt id="aethersprite.settings.SettingFilter.in_">
-<code class="sig-name descname">in_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#SettingFilter.in_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.SettingFilter.in_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Must override; input filter.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="aethersprite.settings.SettingFilter.out">
-<code class="sig-name descname">out</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#SettingFilter.out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.SettingFilter.out" title="Permalink to this definition">¶</a></dt>
-<dd><p>Must override; output filter.</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
 <dt id="aethersprite.settings.register">
-<code class="sig-prename descclassname">aethersprite.settings.</code><code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">validator</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filter</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#aethersprite.settings.SettingFilter" title="aethersprite.settings.SettingFilter">aethersprite.settings.SettingFilter</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.register" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">aethersprite.settings.</code><code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">validator</span><span class="p">:</span> <span class="n">callable</span></em>, <em class="sig-param"><span class="n">channel</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filter</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>SettingFilter<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/settings.html#register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.settings.register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register a setting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -428,6 +444,76 @@ in their code, and end users can manipulate those settings via bot commands
 <dt id="aethersprite.settings.settings">
 <code class="sig-prename descclassname">aethersprite.settings.</code><code class="sig-name descname">settings</code><em class="property"> = {}</em><a class="headerlink" href="#aethersprite.settings.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setting definitions</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-aethersprite.filters">
+<span id="filters"></span><h2>Filters<a class="headerlink" href="#module-aethersprite.filters" title="Permalink to this headline">¶</a></h2>
+<p>Setting filters module</p>
+<dl class="py class">
+<dt id="aethersprite.filters.ChannelFilter">
+<em class="property">class </em><code class="sig-prename descclassname">aethersprite.filters.</code><code class="sig-name descname">ChannelFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">multiple</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/filters.html#ChannelFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.filters.ChannelFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter used for converting channel names to IDs and back</p>
+<dl class="py method">
+<dt id="aethersprite.filters.ChannelFilter.in_">
+<code class="sig-name descname">in_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/filters.html#ChannelFilter.in_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.filters.ChannelFilter.in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must override; input filter.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="aethersprite.filters.ChannelFilter.multiple">
+<code class="sig-name descname">multiple</code><em class="property">: bool</em><em class="property"> = True</em><a class="headerlink" href="#aethersprite.filters.ChannelFilter.multiple" title="Permalink to this definition">¶</a></dt>
+<dd><p>True to allow multiple values</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="aethersprite.filters.ChannelFilter.out">
+<code class="sig-name descname">out</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span><span class="p">:</span> <span class="n">discord.ext.commands.context.Context</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">List<span class="p">[</span>int<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="_modules/aethersprite/filters.html#ChannelFilter.out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.filters.ChannelFilter.out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must override; output filter.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="aethersprite.filters.RoleFilter">
+<em class="property">class </em><code class="sig-prename descclassname">aethersprite.filters.</code><code class="sig-name descname">RoleFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">multiple</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/filters.html#RoleFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.filters.RoleFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter used for converting role names to IDs and back</p>
+<dl class="py method">
+<dt id="aethersprite.filters.RoleFilter.in_">
+<code class="sig-name descname">in_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/filters.html#RoleFilter.in_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.filters.RoleFilter.in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must override; input filter.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="aethersprite.filters.RoleFilter.multiple">
+<code class="sig-name descname">multiple</code><em class="property">: bool</em><em class="property"> = True</em><a class="headerlink" href="#aethersprite.filters.RoleFilter.multiple" title="Permalink to this definition">¶</a></dt>
+<dd><p>True to allow multiple values</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="aethersprite.filters.RoleFilter.out">
+<code class="sig-name descname">out</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span><span class="p">:</span> <span class="n">discord.ext.commands.context.Context</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">List<span class="p">[</span>int<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="_modules/aethersprite/filters.html#RoleFilter.out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.filters.RoleFilter.out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must override; output filter.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="aethersprite.filters.SettingFilter">
+<em class="property">class </em><code class="sig-prename descclassname">aethersprite.filters.</code><code class="sig-name descname">SettingFilter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/filters.html#SettingFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.filters.SettingFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class with methods for filtering a setting’s input and output</p>
+<dl class="py method">
+<dt id="aethersprite.filters.SettingFilter.in_">
+<code class="sig-name descname">in_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/aethersprite/filters.html#SettingFilter.in_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.filters.SettingFilter.in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must override; input filter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="aethersprite.filters.SettingFilter.out">
+<code class="sig-name descname">out</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><a class="reference internal" href="_modules/aethersprite/filters.html#SettingFilter.out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.filters.SettingFilter.out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must override; output filter.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -494,6 +580,7 @@ argument to <code class="docutils literal notranslate"><span class="pre">False</
 <li><a class="reference internal" href="#module-aethersprite">Main</a></li>
 <li><a class="reference internal" href="#module-aethersprite.common">Common</a></li>
 <li><a class="reference internal" href="#module-aethersprite.settings">Settings</a></li>
+<li><a class="reference internal" href="#module-aethersprite.filters">Filters</a></li>
 <li><a class="reference internal" href="#module-aethersprite.authz">Authorization</a></li>
 </ul>
 </li>
