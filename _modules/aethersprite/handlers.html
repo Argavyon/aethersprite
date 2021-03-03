@@ -40,11 +40,12 @@
 
 <span class="sd">.. note::</span>
 
-<span class="sd">    Decorators must be handled differently for class methods due to how they</span>
-<span class="sd">    are invoked. The first argument of the function (not counting ``self``</span>
-<span class="sd">    if the function is a method) will be provided with a reference to the bot.</span>
-<span class="sd">    To decorate a method, assign the handler during ``__init__``. To decorate</span>
-<span class="sd">    a plain function, you may use the decorator as normal.</span>
+<span class="sd">    Decorators must be handled differently for methods vs. independent</span>
+<span class="sd">    functions due to how they are invoked. The first argument of the function</span>
+<span class="sd">    (not counting ``self`` if the function is a method) will be provided with a</span>
+<span class="sd">    reference to the bot. To decorate a method, assign the handler during</span>
+<span class="sd">    ``__init__``. To decorate a plain function, you may use the decorator as</span>
+<span class="sd">    normal.</span>
 
 <span class="sd">.. code:: python</span>
 
@@ -57,8 +58,8 @@
 <span class="sd">            self.on_ready = handle_ready(self.on_ready)</span>
 
 <span class="sd">        def on_ready(self, _):</span>
-<span class="sd">            # don&#39;t care about the bot parameter here, but still have to include it</span>
-<span class="sd">            # to avoid exceptions</span>
+<span class="sd">            # don&#39;t care about the bot parameter here, but still have to</span>
+<span class="sd">            # include it to avoid exceptions</span>
 <span class="sd">            pass</span>
 
 <span class="sd">    @handle_ready</span>
