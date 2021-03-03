@@ -575,6 +575,33 @@ argument to <code class="docutils literal notranslate"><span class="pre">False</
 <div class="section" id="module-aethersprite.handlers">
 <span id="handlers"></span><h2>Handlers<a class="headerlink" href="#module-aethersprite.handlers" title="Permalink to this headline">¶</a></h2>
 <p>Event handler utilities</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Decorators must be handled differently for class methods due to how they
+are invoked. The first argument of the function (not counting <code class="docutils literal notranslate"><span class="pre">self</span></code>
+if the function is a method) will be provided with a reference to the bot.
+To decorate a method, assign the handler during <code class="docutils literal notranslate"><span class="pre">__init__</span></code>. To decorate
+a plain function, you may use the decorator as normal.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">Cog</span>
+<span class="kn">from</span> <span class="nn">aethersprite.common</span> <span class="kn">import</span> <span class="n">handle_ready</span>
+
+<span class="k">class</span> <span class="nc">SomeClass</span><span class="p">(</span><span class="n">Cog</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bot</span> <span class="o">=</span> <span class="n">bot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_ready</span> <span class="o">=</span> <span class="n">handle_ready</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_ready</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="c1"># don&#39;t care about the bot parameter here, but still have to include it</span>
+        <span class="c1"># to avoid exceptions</span>
+        <span class="k">pass</span>
+
+<span class="nd">@handle_ready</span>
+<span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="n">bot</span><span class="p">):</span>
+    <span class="c1"># since we&#39;re not a Cog, we need the bot reference to do stuff</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt id="aethersprite.handlers.HandlerCollection">
 <em class="property">class </em><code class="sig-prename descclassname">aethersprite.handlers.</code><code class="sig-name descname">HandlerCollection</code><a class="reference internal" href="_modules/aethersprite/handlers.html#HandlerCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.handlers.HandlerCollection" title="Permalink to this definition">¶</a></dt>
@@ -627,29 +654,7 @@ argument to <code class="docutils literal notranslate"><span class="pre">False</
 <dl class="py function">
 <dt id="aethersprite.handlers.handle_ready">
 <code class="sig-prename descclassname">aethersprite.handlers.</code><code class="sig-name descname">handle_ready</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Callable</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/handlers.html#handle_ready"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.handlers.handle_ready" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorator to add function to list of handlers to run for the <code class="docutils literal notranslate"><span class="pre">on_ready</span></code>
-event. The first argument of the function (not counting <code class="docutils literal notranslate"><span class="pre">self</span></code> if the
-function is a method) will be provided with a reference to the bot. To
-decorate a method, assign the handler during <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">Cog</span>
-<span class="kn">from</span> <span class="nn">aethersprite.common</span> <span class="kn">import</span> <span class="n">handle_ready</span>
-
-<span class="k">class</span> <span class="nc">SomeClass</span><span class="p">(</span><span class="n">Cog</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bot</span> <span class="o">=</span> <span class="n">bot</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">on_ready</span> <span class="o">=</span> <span class="n">handle_ready</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_ready</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-        <span class="c1"># don&#39;t care about the bot parameter here, but still have to include it</span>
-        <span class="c1"># to avoid exceptions</span>
-        <span class="k">pass</span>
-
-<span class="nd">@handle_ready</span>
-<span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="n">bot</span><span class="p">):</span>
-    <span class="c1"># since we&#39;re not a Cog, we need the bot reference to do stuff</span>
-    <span class="k">pass</span>
-</pre></div>
-</div>
+<dd><p>on_ready event handler decorator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>f</strong> – The handler callable to hook to the event</p>

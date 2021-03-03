@@ -35,7 +35,37 @@
           <div class="body" role="main">
             
   <h1>Source code for aethersprite.handlers</h1><div class="highlight"><pre>
-<span></span><span class="s2">&quot;Event handler utilities&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Event handler utilities</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">    Decorators must be handled differently for class methods due to how they</span>
+<span class="sd">    are invoked. The first argument of the function (not counting ``self``</span>
+<span class="sd">    if the function is a method) will be provided with a reference to the bot.</span>
+<span class="sd">    To decorate a method, assign the handler during ``__init__``. To decorate</span>
+<span class="sd">    a plain function, you may use the decorator as normal.</span>
+
+<span class="sd">.. code:: python</span>
+
+<span class="sd">    from discord.ext.commands import Cog</span>
+<span class="sd">    from aethersprite.common import handle_ready</span>
+
+<span class="sd">    class SomeClass(Cog):</span>
+<span class="sd">        def __init__(self, bot):</span>
+<span class="sd">            self.bot = bot</span>
+<span class="sd">            self.on_ready = handle_ready(self.on_ready)</span>
+
+<span class="sd">        def on_ready(self, _):</span>
+<span class="sd">            # don&#39;t care about the bot parameter here, but still have to include it</span>
+<span class="sd">            # to avoid exceptions</span>
+<span class="sd">            pass</span>
+
+<span class="sd">    @handle_ready</span>
+<span class="sd">    def on_ready(bot):</span>
+<span class="sd">        # since we&#39;re not a Cog, we need the bot reference to do stuff</span>
+<span class="sd">        pass</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># stdlib</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
@@ -96,30 +126,7 @@
 
 <div class="viewcode-block" id="handle_ready"><a class="viewcode-back" href="../../index.html#aethersprite.handlers.handle_ready">[docs]</a><span class="k">def</span> <span class="nf">handle_ready</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decorator to add function to list of handlers to run for the ``on_ready``</span>
-<span class="sd">    event. The first argument of the function (not counting ``self`` if the</span>
-<span class="sd">    function is a method) will be provided with a reference to the bot. To</span>
-<span class="sd">    decorate a method, assign the handler during ``__init__``.</span>
-
-<span class="sd">    .. code:: python</span>
-
-<span class="sd">        from discord.ext.commands import Cog</span>
-<span class="sd">        from aethersprite.common import handle_ready</span>
-
-<span class="sd">        class SomeClass(Cog):</span>
-<span class="sd">            def __init__(self, bot):</span>
-<span class="sd">                self.bot = bot</span>
-<span class="sd">                self.on_ready = handle_ready(self.on_ready)</span>
-
-<span class="sd">            def on_ready(self, _):</span>
-<span class="sd">                # don&#39;t care about the bot parameter here, but still have to include it</span>
-<span class="sd">                # to avoid exceptions</span>
-<span class="sd">                pass</span>
-
-<span class="sd">        @handle_ready</span>
-<span class="sd">        def on_ready(bot):</span>
-<span class="sd">            # since we&#39;re not a Cog, we need the bot reference to do stuff</span>
-<span class="sd">            pass</span>
+<span class="sd">    on_ready event handler decorator.</span>
 
 <span class="sd">    :param f: The handler callable to hook to the event</span>
 <span class="sd">    :returns: The untouched callable</span>
