@@ -86,7 +86,8 @@
 <div class="viewcode-block" id="HandlerCollection.add"><a class="viewcode-back" href="../../index.html#aethersprite.handlers.HandlerCollection.add">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add handler to collection.</span>
+<span class="sd">        Add handler to collection. This tracks handlers by their `__name__`,</span>
+<span class="sd">        and is preferred to manipulating `handlers` directly.</span>
 
 <span class="sd">        :param handler: The handler callable to hook to the event</span>
 <span class="sd">        &quot;&quot;&quot;</span>
