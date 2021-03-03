@@ -420,7 +420,7 @@ for filtering value input and output</p></li>
 
 <dl class="py attribute">
 <dt id="aethersprite.filters.ChannelFilter.multiple">
-<code class="sig-name descname">multiple</code><em class="property">: bool</em><em class="property"> = True</em><a class="headerlink" href="#aethersprite.filters.ChannelFilter.multiple" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">multiple</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#aethersprite.filters.ChannelFilter.multiple" title="Permalink to this definition">¶</a></dt>
 <dd><p>True to allow multiple values</p>
 </dd></dl>
 
@@ -540,6 +540,32 @@ for filtering value input and output</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="aethersprite.authz.is_in_any_role">
+<code class="sig-prename descclassname">aethersprite.authz.</code><code class="sig-name descname">is_in_any_role</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">user</span><span class="p">:</span> <span class="n">discord.member.Member</span></em>, <em class="sig-param"><span class="n">roles</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>discord.role.Role<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/aethersprite/authz.html#is_in_any_role"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.authz.is_in_any_role" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not a member is in any of the given roles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> – The user in question</p></li>
+<li><p><strong>roles</strong> – The roles to check for membership</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aethersprite.authz.react_if_not_help">
+<em class="property">async </em><code class="sig-prename descclassname">aethersprite.authz.</code><code class="sig-name descname">react_if_not_help</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span><span class="p">:</span> <span class="n">discord.ext.commands.context.Context</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/authz.html#react_if_not_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.authz.react_if_not_help" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the command was not invoked as an alias of the help command, react with
+the police officer emoji.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ctx</strong> – The current context</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="aethersprite.authz.require_admin">
 <em class="property">async </em><code class="sig-prename descclassname">aethersprite.authz.</code><code class="sig-name descname">require_admin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/authz.html#require_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.authz.require_admin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check for requiring admin/mod privileges to execute a command.</p>
@@ -547,7 +573,22 @@ for filtering value input and output</p></li>
 
 <dl class="py function">
 <dt id="aethersprite.authz.require_roles">
-<em class="property">async </em><code class="sig-prename descclassname">aethersprite.authz.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">setting</span></em>, <em class="sig-param"><span class="n">open_by_default</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aethersprite/authz.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.authz.require_roles" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">aethersprite.authz.</code><code class="sig-name descname">require_roles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span><span class="p">:</span> <span class="n">discord.ext.commands.context.Context</span></em>, <em class="sig-param"><span class="n">roles</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>discord.role.Role<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/aethersprite/authz.html#require_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.authz.require_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for requiring particular roles to execute a command. Membership in at
+least one of the roles is requied to pass the filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – The current context</p></li>
+<li><p><strong>roles</strong> – The roles to authorize</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="aethersprite.authz.require_roles_from_setting">
+<em class="property">async </em><code class="sig-prename descclassname">aethersprite.authz.</code><code class="sig-name descname">require_roles_from_setting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span><span class="p">:</span> <span class="n">discord.ext.commands.context.Context</span></em>, <em class="sig-param"><span class="n">setting</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">open_by_default</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/aethersprite/authz.html#require_roles_from_setting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aethersprite.authz.require_roles_from_setting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check for requiring particular roles (loaded from the given setting) to
 execute a command. For more than one setting (if <code class="docutils literal notranslate"><span class="pre">setting</span></code> is a
 list/tuple), the aggregate list will be used. Membership in at least one of
@@ -559,16 +600,23 @@ argument to <code class="docutils literal notranslate"><span class="pre">False</
 <p>Example, if your setting with role(s) is <code class="docutils literal notranslate"><span class="pre">setting.name</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span> <span class="nn">discord.ext.commands</span> <span class="kn">import</span> <span class="n">check</span><span class="p">,</span> <span class="n">command</span>
-<span class="kn">from</span> <span class="nn">aethersprite.authz</span> <span class="kn">import</span> <span class="n">require_roles</span>
+<span class="kn">from</span> <span class="nn">aethersprite.authz</span> <span class="n">require_roles</span><span class="p">,</span> <span class="kn">import</span> <span class="nn">require_roles_from_setting</span>
+<span class="kn">from</span> <span class="nn">my_super_secret_special_code</span> <span class="kn">import</span> <span class="n">get_roles</span>
 
-<span class="n">authz</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">require_roles</span><span class="p">,</span> <span class="n">setting</span><span class="o">=</span><span class="s1">&#39;setting.name&#39;</span><span class="p">)</span>
+<span class="n">authz</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">require_roles</span><span class="p">,</span> <span class="n">get_roles</span><span class="p">())</span>
+<span class="n">authz_setting</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">require_roles_from_setting</span><span class="p">,</span> <span class="n">setting</span><span class="o">=</span><span class="s1">&#39;setting.name&#39;</span><span class="p">)</span>
 
 <span class="nd">@command</span><span class="p">()</span>
 <span class="nd">@check</span><span class="p">(</span><span class="n">authz</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">my_command</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
     <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;You are authorized. Congratulations!&#39;</span><span class="p">)</span>
 
-<span class="c1"># to set via bot command: !set setting.name SomeRoleName, SomeOtherRole</span>
+<span class="nd">@command</span><span class="p">()</span>
+<span class="nd">@check</span><span class="p">(</span><span class="n">authz_setting</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">my_other_command</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="c1"># to set via bot command: !set setting.name SomeRoleName, SomeOtherRole</span>
+    <span class="k">await</span> <span class="n">ctx</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;You are a member of one of the authorized roles. &#39;</span>
+                   <span class="s1">&#39;Congratulations!&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
