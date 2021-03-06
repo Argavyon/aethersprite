@@ -35,6 +35,8 @@ _This bot is a work in progress. Please excuse my mess..._
   Change the bot's nickname per-server
 - `only`
   Only allow whitelisted commands in a channel
+- `poll`
+  Create and manage polls that members can vote on
 - `roles`
   Allow members to manage their own membership in chosen roles
 - `settings`
@@ -53,12 +55,14 @@ operate based entirely on events.
   The message that will be used to greet new users when they join the server.
   If set to the default, no greeting will be posted. You may use the `{name}`
   token in your message, and it will be replaced with the new member's
-  username.
+  username. The `{nl}` token will be replaced with a line break (new line).
 - `nameonly` _(server)_
   If set to anything other than the default value, the bot will only respond
   if it is mentioned directly
 - `nameonly.channel` _(channel)_
   Like `nameonly`, but this setting applies to individual channels
+- `prefix` _(server)_
+  Change the bot's command prefix (default `!`)
 
 ## Extension packs
 
