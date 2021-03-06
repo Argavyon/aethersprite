@@ -5,17 +5,18 @@ from random import seed
 from sys import stdout
 from typing import Optional
 # 3rd party
-from discord import Activity, ActivityType
-from discord import DMChannel
+from discord import Activity, ActivityType, Intents
+from discord import DMChannel, Member, RawReactionActionEvent
 from discord.ext.commands import (Bot, CheckFailure, command, CommandNotFound,
-                                  DefaultHelpCommand, when_mentioned_or,)
+                                  Context, DefaultHelpCommand,
+                                  when_mentioned_or,)
 # local
 from . import config, log
 
 # logging stuff
 streamHandler = logging.StreamHandler(stdout)
 streamHandler.setFormatter(logging.Formatter(
-    '{asctime} {levelname:<7} {message} <{module}.{funcName}>', style='{'))
+    '{asctime} {levelname:<7} <{module}.{funcName}> {message}', style='{'))
 log.addHandler(streamHandler)
 log.setLevel(getattr(logging, environ.get('LOGLEVEL', 'INFO')))
 
@@ -34,15 +35,18 @@ DefaultHelpCommand.get_ending_note = get_ending_note
 
 
 @command(name=_help, hidden=True)
-async def aehelp(ctx, command: Optional[str] = None):
+async def aehelp(ctx: Context, command: Optional[str] = None):
     if command is None:
         await ctx.send_help()
     else:
         await ctx.send_help(command)
 
 
+intents: Intents = Intents.default()
+intents.members = True
+
 #: The bot itself
-bot = Bot(command_prefix=when_mentioned_or('!'))
+bot = Bot(command_prefix=when_mentioned_or('!'), intents=intents)
 
 
 @bot.event
@@ -56,7 +60,7 @@ async def on_disconnect():
 
 
 @bot.event
-async def on_command_error(ctx, error):
+async def on_command_error(ctx: Context, error: Exception):
     "Suppress command check failures and invalid commands."
 
     if isinstance(error, CheckFailure):
@@ -96,28 +100,11 @@ async def on_command_error(ctx, error):
 
 
 @bot.event
-async def on_member_join(member):
-    "Fire on_member_join handlers."
-
-    from .handlers import MemberJoinHandlers
-
-    log.info(f'New member {member} joined {member.guild}')
-
-    for f in set(MemberJoinHandlers.handlers):
-        await f(member)
-
-
-@bot.event
 async def on_ready():
     "Update presence and fire up registered startup handlers."
 
-    from .handlers import ReadyHandlers
-
     log.info(f'Logged in as {bot.user}')
     await bot.change_presence(activity=activity)
-
-    for f in set(ReadyHandlers.handlers):
-        await f(bot)
 
 
 @bot.event
@@ -142,6 +129,15 @@ def entrypoint():
     # load extensions
     for ext in config['bot']['extensions']:
         bot.load_extension(ext)
+
+    if log.level >= logging.DEBUG:
+        for key, evs in bot.extra_events.items():
+            out = []
+
+            for f in evs:
+                out.append(f'{f.__module__}:{f.__name__}')
+
+            log.debug(f'{key} => {out!r}')
 
     # here we go!
     bot.run(token)

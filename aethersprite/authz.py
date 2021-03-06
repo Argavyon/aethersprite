@@ -34,7 +34,7 @@ def is_in_any_role(user: Member, roles: Sequence[Role]) -> bool:
     :param roles: The roles to check for membership
     """
 
-    if len(roles) > 0 and len([r for r in user.roles if r.id in roles]) > 0:
+    if len(roles) > 0 and len([r for r in user.roles if r in roles]) > 0:
         return True
 
     return False
@@ -156,14 +156,15 @@ async def require_roles_from_setting(ctx: Context, setting: str,
         # Superusers get a pass
         return True
 
-    roles = settings[setting].get(ctx)
+    roles_id = [int(r) for r in settings[setting].get(ctx, raw=True)]
 
-    if roles is None:
+    if roles_id is None:
         # no roles set, use default
         return open_by_default
 
-    if is_in_any_role(ctx.author, roles):
-        return True
+    for r in ctx.author.roles:
+        if r.id in roles_id:
+            return True
 
     await react_if_not_help(ctx)
 
